@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados del Análisis Climático</title>
 
-    <link rel="stylesheet" href="nasa_weather_app/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -20,8 +20,8 @@
 
     <div class="results-page-container">
         <header>
-            <img src="nasa_weather_app/static/images/rf_logo.png" alt="RF Solutions Logo" class="header-logo">
-            <img src="nasa_weather_app/static/images/LogoNasa.png" alt="Logo de la Aplicación" class="header-logo">
+            <img src="{{ url_for('static', filename='images/rf_logo.png') }}" alt="RF Solutions Logo" class="header-logo">
+            <img src="{{ url_for('static', filename='images/LogoNasa.png') }}" alt="Logo de la Aplicación" class="header-logo">
             <h1></h1>
         </header>
 
@@ -36,11 +36,9 @@
 
                 <div id="actions-section"></div>
 
-            </div>
-        </main>
+            </div> </main>
 
-    </div>
-    <script src="nasa_weather_app/static/js/results.js"></script>
+    </div> <script src="{{ url_for('static', filename='js/results.js') }}"></script>
 
 </body>
 </html>
