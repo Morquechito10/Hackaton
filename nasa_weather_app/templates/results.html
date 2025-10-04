@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Análisis Climático</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body class="scrollable-page">
+
+    <div class="results-page-container">
+        <header>
+            <img src="{{ url_for('static', filename='images/rf_logo.png') }}" alt="RF Solutions Logo" class="header-logo">
+            <img src="{{ url_for('static', filename='images/LogoNasa.png') }}" alt="Logo de la Aplicación" class="header-logo">
+            <h1></h1>
+        </header>
+
+        <main>
+            <div class="card">
+                
+                <div id="results-content">
+                    <p>Cargando resultados...</p>
+                </div>
+
+                <div id="charts-section"></div>
+
+                <div id="actions-section"></div>
+
+            </div> </main>
+
+    </div> <script src="{{ url_for('static', filename='js/results.js') }}"></script>
+
+</body>
+</html>
