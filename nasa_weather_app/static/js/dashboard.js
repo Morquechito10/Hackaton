@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('weatherData', JSON.stringify(result));
 
             // 4. Redirigir a la página de resultados
-            window.location.href = 'nasa_weather_app/static/js/results';
+            window.location.href = 'nasa_weather_app/static/templates/results.html';
 
         } catch (error) {
             alert(`Error: ${error.message}`);
