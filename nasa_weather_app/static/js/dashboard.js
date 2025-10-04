@@ -97,6 +97,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Geolocalización automática ---
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                updateLocationFields(lat, lon);
+                map.setView([lat, lon], 13);
+            },
+            (error) => {
+                // Si el usuario rechaza, se mantiene la vista por defecto
+                console.warn("No se pudo obtener la ubicación:", error.message);
+            }
+        );
+    }
+
     // La función displayResults ya no se necesita en este archivo.
     
     function getTodayDateString() {
