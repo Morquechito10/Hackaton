@@ -11,18 +11,15 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='css/style.css') }}"
-    />
+    <link rel="stylesheet" href="static/css/style.css" />
   </head>
   <body class="fixed-layout">
     <div class="dashboard-container">
       <div class="left-panel">
         <header>
-          <img src="{{ url_for('static', path='images/rf_logo.png') }}" alt="RF Solutions Logo" class="header-logo">
+          <img src="static/images/rf_logo.png" alt="RF Solutions Logo" class="header-logo">
           <img
-            src="{{ url_for('static', path='images/LogoNasa.png') }}"
+            src="static/images/LogoNasa.png"
             alt="Logo de la Aplicación"
             class="header-logo"
           />
@@ -96,7 +93,7 @@
       </div>
     </div>
 
-    <script src="{{ url_for('static', path='js/dashboard.js') }}"></script>
+    <script src="static/js/dashboard.js"></script>
 
     <div id="loading-overlay">
       <div class="spinner"></div>
