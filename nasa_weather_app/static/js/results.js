@@ -15,9 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Funciones Helper ---
     function getWeatherImagePath(sensacionClimatica) {
-        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return 'static/images/agradable.png';
-        const imageMap = {'muy caluroso': 'static/images/caluroso.png','muy incómodo': 'static/images/incomodo.png','muy frío': 'static/images/frio.png','muy húmedo': 'static/images/humedo.png','ventoso': 'static/images/ventoso.png','agradable': 'static/images/agradable.png'};
-        return imageMap[sensacionClimatica.toLowerCase()] || 'static/images/agradable.png';
+        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return 'nasa_weather_app/static/images/agradable.png';
+        const imageMap = {
+            'muy caluroso': 'nasa_weather_app/static/images/caluroso.png',
+            'muy incómodo': 'nasa_weather_app/static/images/incomodo.png',
+            'muy frío': 'nasa_weather_app/static/images/frio.png',
+            'muy húmedo': 'nasa_weather_app/static/images/humedo.png',
+            'ventoso': 'nasa_weather_app/static/images/ventoso.png',
+            'agradable': 'nasa_weather_app/static/images/agradable.png'
+        };
+        return imageMap[sensacionClimatica.toLowerCase()] || 'nasa_weather_app/static/images/agradable.png';
     }
     function getWeatherIcon(data) {
         if (data.prob_lluvia > 40 || data.precipitacion_media > 1.5) return '🌧️';
