@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
     const dd = String(tomorrow.getDate()).padStart(2, '0');
     dateInput.min = `${yyyy}-${mm}-${dd}`;
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
+    dateInput.value = ""; // <-- Deja el campo de fecha en blanco por defecto
     const analyzeButton = document.getElementById('analyze-button');
     const loadingOverlay = document.getElementById('loading-overlay'); // Para la pantalla de carga
 
