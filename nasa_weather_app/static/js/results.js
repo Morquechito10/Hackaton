@@ -5,24 +5,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionsSection = document.getElementById('actions-section');
 
     // =================================================================
-    // LÓGICA PARA TARJETAS PERSONALIZABLES
+    // LÓGICA PARA TARJETAS PERSONALIZABLES (CON TEMAS Y EMOJIS CORREGIDOS)
     // =================================================================
 
     const ALL_METRICS = {
         main: {
-            temperatura: (data) => `<div class="metric-card"><div class="icon-wrapper">🌡️</div><p class="metric-label">Temperatura</p><p class="metric-value">${data.temperatura_media}°C</p><small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small></div>`,
-            lluvia: (data) => `<div class="metric-card"><div class="icon-wrapper">💧</div><p class="metric-label">Prob. Lluvia</p><p class="metric-value">${data.prob_lluvia}%</p><small>Precipitación: ${data.precipitacion_media} mm</small></div>`,
-            uv: (data) => `<div class="metric-card"><div class="icon-wrapper">☀️</div><p class="metric-label">Índice UV</p><p class="metric-value">${data.indice_uv}</p><small>Radiación Solar</small></div>`,
-            viento: (data) => `<div class="metric-card"><div class="icon-wrapper">💨</div><p class="metric-label">Viento</p><p class="metric-value">${data.viento_velocidad_media} m/s</p><small>Prob. Fuertes: ${data.prob_vientos_fuertes}%</small></div>`,
+            temperatura: (data) => `<div class="metric-card card-temp"><div class="icon-wrapper">🌡️</div><p class="metric-label">Temperatura</p><p class="metric-value">${data.temperatura_media}°C</p><small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small></div>`,
+            lluvia: (data) => `<div class="metric-card card-rain"><div class="icon-wrapper">💧</div><p class="metric-label">Prob. Lluvia</p><p class="metric-value">${data.prob_lluvia}%</p><small>Precipitación: ${data.precipitacion_media} mm</small></div>`,
+            uv: (data) => `<div class="metric-card card-uv"><div class="icon-wrapper">☀️</div><p class="metric-label">Índice UV</p><p class="metric-value">${data.indice_uv}</p><small>Radiación Solar</small></div>`,
+            viento: (data) => `<div class="metric-card card-wind"><div class="icon-wrapper">💨</div><p class="metric-label">Viento</p><p class="metric-value">${data.viento_velocidad_media} m/s</p><small>Prob. Fuertes: ${data.prob_vientos_fuertes}%</small></div>`,
         },
         other: {
-            humedad: (data) => `<div class="metric-card"><div class="icon-wrapper">💧</div><p class="metric-label">Humedad</p><p class="metric-value">${data.humedad_relativa_media}%</p><small>Relativa promedio</small></div>`,
-            nubes: (data) => `<div class="metric-card"><div class="icon-wrapper">☁️</div><p class="metric-label">Nubes</p><p class="metric-value">${data.cobertura_nubosa}%</p><small>Cobertura Nubosa</small></div>`,
-            calidad_aire: (data) => `<div class="metric-card"><div class="icon-wrapper">🍃</div><p class="metric-label">Calidad del Aire</p><p class="metric-value">${data.calidad_aire}</p><small>Índice de calidad</small></div>`,
-            polvo: (data) => `<div class="metric-card"><div class="icon-wrapper">🏜️</div><p class="metric-label">Polvo</p><p class="metric-value">${data.concentracion_polvo}</p><small>Concentración</small></div>`,
-            calor_extremo: (data) => `<div class="metric-card"><div class="icon-wrapper">🔥</div><p class="metric-label">Calor Extremo</p><p class="metric-value">${data.prob_calor_extremo}%</p><small>Probabilidad</small></div>`,
-            frio_extremo: (data) => `<div class="metric-card"><div class="icon-wrapper">🥶</div><p class="metric-label">Frío Extremo</p><p class="metric-value">${data.prob_frio_extremo}%</p><small>Probabilidad</small></div>`,
-            nieve: (data) => `<div class="metric-card"><div class="icon-wrapper">❄️</div><p class="metric-label">Nieve</p><p class="metric-value">${data.prob_nieve}%</p><small>Probabilidad</small></div>`,
+            humedad: (data) => `<div class="metric-card card-humidity"><div class="icon-wrapper">💧</div><p class="metric-label">Humedad</p><p class="metric-value">${data.humedad_relativa_media}%</p><small>Relativa promedio</small></div>`,
+            nubes: (data) => `<div class="metric-card card-clouds"><div class="icon-wrapper">☁️</div><p class="metric-label">Nubes</p><p class="metric-value">${data.cobertura_nubosa}%</p><small>Cobertura Nubosa</small></div>`,
+            calidad_aire: (data) => `<div class="metric-card card-air"><div class="icon-wrapper">🍃</div><p class="metric-label">Calidad del Aire</p><p class="metric-value">${data.calidad_aire}</p><small>Índice de calidad</small></div>`,
+            polvo: (data) => `<div class="metric-card card-dust"><div class="icon-wrapper">🏜️</div><p class="metric-label">Polvo</p><p class="metric-value">${data.concentracion_polvo}</p><small>Concentración</small></div>`,
+            calor_extremo: (data) => `<div class="metric-card card-heat"><div class="icon-wrapper">🔥</div><p class="metric-label">Calor Extremo</p><p class="metric-value">${data.prob_calor_extremo}%</p><small>Probabilidad</small></div>`,
+            frio_extremo: (data) => `<div class="metric-card card-cold"><div class="icon-wrapper">🥶</div><p class="metric-label">Frío Extremo</p><p class="metric-value">${data.prob_frio_extremo}%</p><small>Probabilidad</small></div>`,
+            nieve: (data) => `<div class="metric-card card-snow"><div class="icon-wrapper">❄️</div><p class="metric-label">Nieve</p><p class="metric-value">${data.prob_nieve}%</p><small>Probabilidad</small></div>`,
         }
     };
 
@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Funciones Helper ---
     function getWeatherImagePath(sensacionClimatica) {
-        // Rutas corregidas con ../ para Netlify
         if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return '../static/images/agradable.png';
         const imageMap = {
             'muy caluroso': '../static/images/caluroso.png',
@@ -159,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return hourlyTemps;
     }
-
 
     // --- Lógica de Visualización ---
     function displayResults(result) {
@@ -203,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMetricCards(data);
     }
     
-    // --- Lógica de Gráficas y Descargas (RESTAURADA) ---
+    // --- Lógica de Gráficas y Descargas ---
     function createCharts(data) {
         chartsSection.innerHTML = `<hr class="divider"><h4>Visualización Gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
         if (typeof ChartDataLabels !== 'undefined') {
