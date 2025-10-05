@@ -81,12 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Funciones Helper ---
   function getWeatherImagePath(weatherFeeling) {
-    // Asegura que weatherFeeling sea un string válido antes de procesar
     if (typeof weatherFeeling !== "string" || weatherFeeling.trim() === "") {
-      return "../static/images/agradable.png"; // Imagen por defecto
+      return "../static/images/agradable.png";
     }
-
-    // Mapeo corregido de sensaciones (en inglés, como viene de la API) a los nombres de TUS archivos
     const imageMap = {
       "very hot": "../static/images/caluroso.jpg",
       "very uncomfortable": "../static/images/incomodo.png",
@@ -95,11 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       windy: "../static/images/ventoso.jpg",
       pleasant: "../static/images/agradable.png",
     };
-
-    // Convierte el feeling a minúsculas para asegurar que coincida con las llaves del map
     const normalizedFeeling = weatherFeeling.toLowerCase();
-
-    // Retorna la imagen correspondiente o la de por defecto si no se encuentra
     return imageMap[normalizedFeeling] || "../static/images/agradable.png";
   }
   function getWeatherIcon(data) {
@@ -416,6 +409,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // =========================================================================
+  // --- SECCIÓN DE DESCARGA (MODIFICADA PARA INGLÉS) ---
+  // =========================================================================
+
+  // Mapa para traducir claves de la API de español a inglés.
+  const SPANISH_TO_ENGLISH_KEYS = {
+    temperatura_media: "average_temperature",
+    prob_lluvia: "rain_probability",
+    indice_uv: "uv_index",
+    viento_velocidad_media: "average_wind_speed",
+    humedad_relativa_media: "average_relative_humidity",
+    cobertura_nubosa: "cloud_coverage",
+    calidad_aire: "air_quality",
+    concentracion_polvo: "dust_concentration",
+    prob_calor_extremo: "extreme_heat_probability",
+    prob_frio_extremo: "extreme_cold_probability",
+    prob_nieve: "snow_probability",
+    temperatura_minima: "minimum_temperature",
+    temperatura_maxima: "maximum_temperature",
+    precipitacion_media: "average_precipitation",
+    prob_vientos_fuertes: "strong_wind_probability",
+    sensacion_climatica: "weather_feel",
+    datos_nasa: "nasa_data",
+    recomendaciones_ai: "ai_recommendation",
+  };
+
   function addDownloadListeners(result) {
     document
       .getElementById("download-pdf")
@@ -427,6 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("download-json")
       .addEventListener("click", () => handleJsonDownload(result));
   }
+
   function triggerDownload(content, fileName, contentType) {
     const a = document.createElement("a");
     const file = new Blob([content], { type: contentType });
@@ -437,17 +457,45 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
   }
+
+  // --- Descarga de JSON en inglés ---
   function handleJsonDownload(result) {
-    const jsonData = JSON.stringify(result, null, 2);
+    const englishResult = {
+      locationName: result.locationName,
+      date: result.date,
+      [SPANISH_TO_ENGLISH_KEYS.ai_recommendation]: result.recomendaciones_ai,
+      [SPANISH_TO_ENGLISH_KEYS.datos_nasa]: {},
+    };
+
+    for (const spanishKey in result.datos_nasa) {
+      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
+      englishResult[SPANISH_TO_ENGLISH_KEYS.datos_nasa][englishKey] =
+        result.datos_nasa[spanishKey];
+    }
+
+    const jsonData = JSON.stringify(englishResult, null, 2);
     triggerDownload(jsonData, "weather_report.json", "application/json");
   }
+
+  // --- Descarga de CSV en inglés ---
   function handleCsvDownload(result) {
     let csvContent = "Metric,Value\n";
     const dataToExport = result.datos_nasa;
-    for (const key in dataToExport) {
-      csvContent += `${key},"${dataToExport[key]}"\n`;
+
+    const formatToTitleCase = (key) =>
+      key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+
+    for (const spanishKey in dataToExport) {
+      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
+      const formattedKey = formatToTitleCase(englishKey);
+      csvContent += `"${formattedKey}","${dataToExport[spanishKey]}"\n`;
     }
-    csvContent += `ai_recommendation,"${result.recomendaciones_ai}"\n`;
+
+    const recommendationKey = formatToTitleCase(
+      SPANISH_TO_ENGLISH_KEYS["recomendaciones_ai"]
+    );
+    csvContent += `"${recommendationKey}","${result.recomendaciones_ai}"\n`;
+
     triggerDownload(
       csvContent,
       "weather_report.csv",
@@ -455,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // PDF usando jsPDF y jsPDF-AutoTable
+  // --- Descarga de PDF en inglés ---
   function handlePdfDownload(result) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -472,29 +520,21 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
     doc.text("Climate Analysis Report", 105, 20, { align: "center" });
-
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-
-    // --- LOCATION SECTION ---
     const locationString = `Location: ${locationName}`;
     const locationLines = doc.splitTextToSize(locationString, 170);
     doc.text(locationLines, 105, 30, { align: "center" });
-
-    // Adjust Y position for next elements
     const dateY = 30 + locationLines.length * 5;
     doc.text(`Analysis Date: ${selectedDate}`, 105, dateY, { align: "center" });
-
     const lineY = dateY + 8;
     doc.setLineWidth(0.5);
     doc.line(20, lineY, 190, lineY);
-    // --- END LOCATION SECTION ---
 
     const recommendationY = lineY + 13;
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("Today's Recommendation", 20, recommendationY);
-
+    doc.text("AI Recommendation", 20, recommendationY);
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
     const recommendationLines = doc.splitTextToSize(
@@ -504,10 +544,13 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.text(recommendationLines, 20, recommendationY + 7);
 
     const tableBody = [];
-    const formatKey = (key) =>
+    const formatToTitleCase = (key) =>
       key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-    for (const key in data) {
-      tableBody.push([formatKey(key), data[key]]);
+
+    for (const spanishKey in data) {
+      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
+      const formattedKey = formatToTitleCase(englishKey);
+      tableBody.push([formattedKey, data[spanishKey]]);
     }
 
     const tableStartY =
@@ -520,6 +563,6 @@ document.addEventListener("DOMContentLoaded", () => {
       headStyles: { fillColor: [67, 105, 215] },
     });
 
-    doc.save("full_weather_report.pdf");
+    doc.save("weather_report.pdf");
   }
 });
