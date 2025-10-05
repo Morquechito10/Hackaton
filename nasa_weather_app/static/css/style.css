@@ -137,12 +137,17 @@ input:disabled {
   cursor: not-allowed;
 }
 
-.search-container {
+ .search-container {
   display: flex;
-  gap: 10px;
+  gap: 0;
 }
 #location-search {
-  flex-grow: 1;
+  flex: 1;
+  height: 40px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px 0 0 6px;
+  padding: 0 12px;
 }
 .coords-container {
   display: flex;
@@ -169,10 +174,18 @@ button {
 }
 
 #search-button {
-  background-color: var(--text-secondary);
+  flex: 1;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 #search-button:hover {
-  background-color: var(--text-primary);
+  background-color: var(--color-primary-dark);
 }
 
 #analyze-button {
