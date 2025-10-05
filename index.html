@@ -81,17 +81,15 @@
 
             <form id="location-form">
               <label for="location-search">Search for a location:</label>
-              <div class="search-container">
-                <div class="input-with-icon-wrapper">
-                  <input
-                    type="text"
-                    id="location-search"
-                    placeholder="E.g.: Times Square, New York"
-                  />
-                  <button type="button" id="current-location-button" title="Use my location" aria-label="Use my location">
-                    <img src="nasa_weather_app/static/images/target-icon.png" alt="Use current location">
-                  </button>
-                </div>
+              <div class="search-bar-row">
+                <button type="button" id="current-location-button" title="Use my location" aria-label="Use my location">
+                  <img src="nasa_weather_app/static/images/target-icon.png" alt="Use current location">
+                </button>
+                <input
+                  type="text"
+                  id="location-search"
+                  placeholder="E.g.: Times Square, New York"
+                />
                 <button type="submit" id="search-button">Search</button>
               </div>
             </form>
