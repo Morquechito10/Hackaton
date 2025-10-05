@@ -191,9 +191,13 @@ button {
 /* ==========================================================================
    5. ADAPTABILIDAD (MEDIA QUERIES)
    ========================================================================== */
+/* --------------------------------------------------------------------------
+   BREAKPOINT #1: Tablets y Móviles Grandes (Hasta 900px)
+   - Cambia el layout principal de 2 columnas a 1 columna.
+   -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
-  body {
-    overflow: auto;
+  body.fixed-layout {
+    overflow: auto; /* Permite scroll en la vista de una columna */
   }
 
   .dashboard-container {
@@ -210,35 +214,95 @@ button {
 
   .right-panel {
     width: 100%;
-    height: 60vh;
+    height: 60vh; /* Buena altura para el mapa en móviles */
     min-height: 400px;
-  }
-
-  header h1 {
-    font-size: 20px;
   }
 }
 
+/* --------------------------------------------------------------------------
+   BREAKPOINT #2: Móviles en General (Hasta 768px)
+   - Ajusta componentes clave para una mejor visualización vertical.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* --- Ajustes en la tarjeta de resumen (results.html) --- */
+  .summary-card {
+    flex-direction: column; /* Apila los elementos para evitar desbordamiento */
+    text-align: center;
+    padding: 25px;
+    gap: 15px;
+  }
+
+  .summary-illustration-img {
+    width: 150px; /* Reduce el tamaño de la imagen */
+    height: 150px;
+    order: -1; /* Mueve la imagen a la parte superior */
+  }
+
+  .summary-icon {
+    font-size: 5em; /* Reduce el tamaño del ícono */
+  }
+  
+  .summary-location {
+      font-size: 1.5em;
+  }
+
+  .summary-temp {
+      font-size: 2.5em;
+  }
+
+  /* --- Apila las gráficas una sobre otra --- */
+  .charts-container {
+    grid-template-columns: 1fr; /* Una sola columna para las gráficas */
+  }
+
+  /* --- Ajusta la lista de métricas en el modal --- */
+  .metric-toggle-list {
+      grid-template-columns: 1fr; /* Una sola columna para la lista */
+  }
+}
+
+/* --------------------------------------------------------------------------
+   BREAKPOINT #3: Móviles Pequeños (Hasta 480px)
+   - Refinamiento de espaciados y tamaños de fuente para pantallas estrechas.
+   -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
-  .left-panel main {
-    padding: 15px;
+  .left-panel main,
+  .results-page-container main {
+    padding: 15px; /* Menos padding en los contenedores principales */
   }
 
   header {
     padding: 10px 15px;
   }
 
-  .header-logo {
-    height: 40px;
+  .header-logo, .results-logo-bar img.header-logo {
+    height: 45px; /* Logos ligeramente más pequeños */
+  }
+  
+  .card {
+    padding: 15px;
   }
 
-  header h1 {
-    font-size: 18px;
-  }
-
+  /* --- Apila los campos de latitud y longitud --- */
   .coords-container {
     flex-direction: column;
     gap: 0;
+  }
+
+  /* --- Mejora la legibilidad de las tarjetas de métricas --- */
+  .metric-card {
+      padding: 15px;
+  }
+  .metric-label {
+      font-size: 1em; /* Ajusta el tamaño para que no se corte */
+  }
+  .metric-card small {
+      font-size: 0.8em;
+  }
+  
+  /* --- Ajustes en los botones de acción --- */
+  .action-buttons-container, .download-buttons {
+      flex-direction: column; /* Apila los botones para que ocupen el ancho completo */
   }
 }
 /* ==========================================================================
