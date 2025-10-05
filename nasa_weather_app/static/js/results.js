@@ -354,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         csvContent += `recomendaciones_ai,"${result.recomendaciones_ai}"\n`;
         triggerDownload(csvContent, 'reporte_climatico.csv', 'text/csv;charset=utf-8;');
     }
+    //Hola
     // PDF usando jsPDF y jsPDF-AutoTable
     function handlePdfDownload(result) {
         const { jsPDF } = window.jspdf;

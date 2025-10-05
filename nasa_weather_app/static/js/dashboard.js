@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const latInput = document.getElementById('latitude');
     const lonInput = document.getElementById('longitude');
     const dateInput = document.getElementById('date');
+    // Establecer el mínimo al día siguiente
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    dateInput.min = `${yyyy}-${mm}-${dd}`;
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
     const analyzeButton = document.getElementById('analyze-button');
     const loadingOverlay = document.getElementById('loading-overlay'); // Para la pantalla de carga
 
