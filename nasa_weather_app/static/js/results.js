@@ -1,33 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Selectores de Elementos ---
+    // --- Element Selectors ---
     const resultsContent = document.getElementById('results-content');
     const chartsSection = document.getElementById('charts-section');
     const actionsSection = document.getElementById('actions-section');
     const modalContainer = document.getElementById('settings-modal-container');
 
-    // --- Definición de todas las métricas disponibles ---
+    // --- Definition of all available metrics ---
     const ALL_METRICS = {
         main: [
-            { key: 'temperatura_media', label: 'Temperatura', icon: '🌡️', theme: 'card-temp' },
-            { key: 'prob_lluvia', label: 'Prob. Lluvia', icon: '💧', theme: 'card-rain' },
-            { key: 'indice_uv', label: 'Índice UV', icon: '☀️', theme: 'card-uv' },
-            { key: 'viento_velocidad_media', label: 'Viento', icon: '💨', theme: 'card-wind' },
+            { key: 'temperatura_media', label: 'Temperature', icon: '🌡️', theme: 'card-temp' },
+            { key: 'prob_lluvia', label: 'Rain Probability', icon: '💧', theme: 'card-rain' },
+            { key: 'indice_uv', label: 'UV Index', icon: '☀️', theme: 'card-uv' },
+            { key: 'viento_velocidad_media', label: 'Wind', icon: '💨', theme: 'card-wind' },
         ],
         other: [
-            { key: 'humedad_relativa_media', label: 'Humedad', icon: '💧', theme: 'card-humidity' },
-            { key: 'cobertura_nubosa', label: 'Nubes', icon: '☁️', theme: 'card-clouds' },
-            { key: 'calidad_aire', label: 'Calidad del Aire', icon: '🍃', theme: 'card-air' },
-            { key: 'concentracion_polvo', label: 'Polvo', icon: '🏜️', theme: 'card-dust' },
-            { key: 'prob_calor_extremo', label: 'Calor Extremo', icon: '🔥', theme: 'card-heat' },
-            { key: 'prob_frio_extremo', label: 'Frío Extremo', icon: '🥶', theme: 'card-cold' },
-            { key: 'prob_nieve', label: 'Nieve', icon: '❄️', theme: 'card-snow' },
+            { key: 'humedad_relativa_media', label: 'Humidity', icon: '💧', theme: 'card-humidity' },
+            { key: 'cobertura_nubosa', label: 'Clouds', icon: '☁️', theme: 'card-clouds' },
+            { key: 'calidad_aire', label: 'Air Quality', icon: '🍃', theme: 'card-air' },
+            { key: 'concentracion_polvo', label: 'Dust', icon: '🏜️', theme: 'card-dust' },
+            { key: 'prob_calor_extremo', label: 'Extreme Heat', icon: '🔥', theme: 'card-heat' },
+            { key: 'prob_frio_extremo', label: 'Extreme Cold', icon: '🥶', theme: 'card-cold' },
+            { key: 'prob_nieve', label: 'Snow', icon: '❄️', theme: 'card-snow' },
         ]
     };
 
     // --- Lógica Principal ---
     const resultsDataString = sessionStorage.getItem('weatherData');
     if (!resultsDataString) {
-        resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor, <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
+        resultsContent.innerHTML = `<p style="color: red;">No data found to display. Please <a href="/">go back</a> and run a new analysis.</p>`;
         return;
     }
     const result = JSON.parse(resultsDataString);
@@ -35,17 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSettingsModal(result.datos_nasa);
 
     // --- Funciones Helper ---
-    function getWeatherImagePath(sensacionClimatica) {
-        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return '../static/images/agradable.png';
+    function getWeatherImagePath(weatherFeeling) {
+        if (typeof weatherFeeling !== 'string' || weatherFeeling.trim() === '') return '../static/images/agradable.png';
         const imageMap = {
-            'muy caluroso': '../static/images/caluroso.png',
-            'muy incómodo': '../static/images/incomodo.png',
-            'muy frío': '../static/images/frio.png',
-            'muy húmedo': '../static/images/humedo.png',
-            'ventoso': '../static/images/ventoso.png',
-            'agradable': '../static/images/agradable.png'
+            'very hot': '../static/images/caluroso.png',
+            'very uncomfortable': '../static/images/incomodo.png',
+            'very cold': '../static/images/frio.png',
+            'very humid': '../static/images/humedo.png',
+            'windy': '../static/images/ventoso.png',
+            'pleasant': '../static/images/agradable.png'
         };
-        return imageMap[sensacionClimatica.toLowerCase()] || '../static/images/agradable.png';
+        return imageMap[weatherFeeling.toLowerCase()] || '../static/images/agradable.png';
     }
     function getWeatherIcon(data) {
         if (data.prob_lluvia > 40 || data.precipitacion_media > 1.5) return '🌧️';

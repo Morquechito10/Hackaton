@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Selectores de elementos ---
+    // --- Element selectors ---
     const searchForm = document.getElementById('location-form');
     const searchInput = document.getElementById('location-search');
     const locationDisplayInput = document.getElementById('location-display');
@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const analyzeButton = document.getElementById('analyze-button');
     const loadingOverlay = document.getElementById('loading-overlay');
 
-    // --- CONFIGURACIÓN DE LA FECHA ---
-    // 1. Establece la fecha mínima seleccionable en mañana.
+    // --- DATE CONFIGURATION ---
+    // 1. Set the minimum selectable date to tomorrow.
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const yyyy = tomorrow.getFullYear();
@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dd = String(tomorrow.getDate()).padStart(2, '0');
     dateInput.min = `${yyyy}-${mm}-${dd}`;
     
-    // 2. Deja el campo de fecha en blanco por defecto.
+    // 2. Leave the date field blank by default.
     dateInput.value = ""; 
 
-    // --- Lógica del mapa y búsqueda ---
+    // --- Map and search logic ---
     const map = L.map('map').setView([23.6345, -102.5528], 5);
     let marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const bestResult = locations[0];
                 updateLocationFields(bestResult.lat, bestResult.lon, bestResult.display_name);
                 map.setView([bestResult.lat, bestResult.lon], 13);
-            } else { throw new Error('No se encontraron resultados.'); }
+            } else { throw new Error('No results found.'); }
         } catch (error) { alert(error.message); }
     });
 
@@ -54,18 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
                 const data = await response.json();
-                locationDisplayInput.value = data.display_name || "Ubicación desconocida";
-            } catch (e) { locationDisplayInput.value = "Ubicación desconocida"; }
+                locationDisplayInput.value = data.display_name || "Unknown location";
+            } catch (e) { locationDisplayInput.value = "Unknown location"; }
         } else { locationDisplayInput.value = displayName; }
     }
 
-    // --- Evento del botón "Analizar" ---
+    // --- "Analyze" button event ---
     analyzeButton.addEventListener('click', async () => {
         const lat = latInput.value;
         const lon = lonInput.value;
         const date = dateInput.value;
         if (!lat || !lon || !date) {
-            alert("Por favor, selecciona una ubicación y una fecha.");
+            alert("Please select a location and a date.");
             return;
         }
 
