@@ -19,21 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (currentLocationButton) {
     currentLocationButton.addEventListener("click", () => {
       if (navigator.geolocation) {
-        currentLocationButton.disabled = true;
-        currentLocationButton.textContent = "Locating...";
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             updateLocationFields(lat, lon);
             map.setView([lat, lon], 13);
-            currentLocationButton.disabled = false;
-            currentLocationButton.textContent = "Use my location";
           },
           (error) => {
             alert("Could not get your location.");
-            currentLocationButton.disabled = false;
-            currentLocationButton.textContent = "Use my location";
           }
         );
       } else {
