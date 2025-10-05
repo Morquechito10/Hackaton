@@ -1,3 +1,29 @@
+.input-location-wrapper {
+  position: relative;
+  width: 100%;
+}
+#location-search {
+  padding-left: 36px;
+}
+#current-location-button {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#current-location-button i {
+  font-size: 18px;
+  color: #d3d3d3;
+}
 #search-location-wrapper {
   position: relative;
   width: 100%;
