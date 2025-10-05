@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!prefs) {
             prefs = {};
             [...Object.keys(ALL_METRICS.main), ...Object.keys(ALL_METRICS.other)].forEach(key => {
-                prefs[key] = true;
+                prefs[key] = true; // Todas activas por defecto
             });
             localStorage.setItem('metricPreferences', JSON.stringify(prefs));
             return prefs;
@@ -64,48 +64,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupSettingsModal(resultData) {
-        const preferences = getMetricPreferences();
-        const modalContainer = document.createElement('div');
-        
-        const createCheckbox = (key, label) => `
-            <li class="metric-toggle-item">
-                <label>
-                    <input type="checkbox" data-key="${key}" ${preferences[key] ? 'checked' : ''}>
-                    ${label}
-                </label>
-            </li>`;
-
-        let checkboxesHTML = '';
-        const formatLabel = (key) => key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        [...Object.keys(ALL_METRICS.main), ...Object.keys(ALL_METRICS.other)].forEach(key => {
-            checkboxesHTML += createCheckbox(key, formatLabel(key));
-        });
-
-        modalContainer.innerHTML = `
-            <div class="modal-overlay" id="settings-modal">
+        const modalContainer = document.getElementById('settings-modal-container');
+        const prefs = getMetricPreferences();
+        let modalHtml = `
+            <div id="settings-modal" class="modal">
                 <div class="modal-content">
-                    <div class="modal-header"><h3>Personalizar Métricas</h3></div>
-                    <div class="modal-body"><ul class="metric-toggle-list">${checkboxesHTML}</ul></div>
-                    <div class="modal-footer">
-                        <button id="modal-close" class="modal-button">Cancelar</button>
-                        <button id="modal-save" class="modal-button">Guardar</button>
-                    </div>
-                </div>
-            </div>`;
-        document.body.appendChild(modalContainer);
-
-        const modal = document.getElementById('settings-modal');
-        document.getElementById('open-settings-btn').addEventListener('click', () => modal.classList.add('visible'));
-        document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('visible'));
-        document.getElementById('modal-save').addEventListener('click', () => {
-            const newPrefs = {};
-            document.querySelectorAll('.metric-toggle-item input').forEach(input => {
-                newPrefs[input.dataset.key] = input.checked;
-            });
-            saveMetricPreferences(newPrefs);
-            renderMetricCards(resultData.datos_nasa);
-            modal.classList.remove('visible');
+                    <h3>Configura tus métricas</h3>
+                    <div class="metrics-list">
+        `;
+        Object.entries({...ALL_METRICS.main, ...ALL_METRICS.other}).forEach(([key, _]) => {
+            modalHtml += `
+                <label>
+                    <input type="checkbox" class="metric-checkbox" data-metric="${key}" ${prefs[key] ? 'checked' : ''}>
+                    ${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </label>
+            `;
         });
+        modalHtml += `
+                    </div>
+                    <button id="show-all-metrics">Mostrar todas</button>
+                    <button id="hide-all-metrics">Ocultar todas</button>
+                    <button id="close-settings">Cerrar</button>
+                </div>
+            </div>
+        `;
+        modalContainer.innerHTML = modalHtml;
+
+        // Mostrar/Ocultar todas
+        document.getElementById('show-all-metrics').onclick = () => {
+            document.querySelectorAll('.metric-checkbox').forEach(cb => cb.checked = true);
+        };
+        document.getElementById('hide-all-metrics').onclick = () => {
+            document.querySelectorAll('.metric-checkbox').forEach(cb => cb.checked = false);
+        };
+
+        // Guardar preferencias al cerrar
+        document.getElementById('close-settings').onclick = () => {
+            const newPrefs = {};
+            document.querySelectorAll('.metric-checkbox').forEach(cb => {
+                newPrefs[cb.dataset.metric] = cb.checked;
+            });
+            localStorage.setItem('metricPreferences', JSON.stringify(newPrefs));
+            modalContainer.innerHTML = '';
+            displayResults(result); // Vuelve a renderizar las cards según preferencias
+        };
     }
 
     // --- Lógica Principal ---
