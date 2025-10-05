@@ -14,7 +14,25 @@ document.addEventListener("DOMContentLoaded", () => {
   dateInput.value = "";
 
   // --- Map and search logic ---
-  // --- Current location button logic ---
+  // --- Current location logic (auto and button) ---
+  function selectCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          updateLocationFields(lat, lon);
+          map.setView([lat, lon], 13);
+        },
+        (error) => {
+          // No alert on load, only on button
+        }
+      );
+    }
+  }
+  // Seleccionar ubicación al iniciar la app
+  selectCurrentLocation();
+  // Icono de ubicación manual
   const currentLocationButton = document.getElementById("current-location-button");
   if (currentLocationButton) {
     currentLocationButton.addEventListener("click", () => {
@@ -37,9 +55,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   const map = L.map("map").setView([23.6345, -102.5528], 5);
   let marker;
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  // Capas base
+  const standardLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap",
-  }).addTo(map);
+  });
+  const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    attribution: "Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+  });
+  // Añadir capa estándar por defecto
+  standardLayer.addTo(map);
+  // Control de capas
+  const baseMaps = {
+    "Standard": standardLayer,
+    "Satellite": satelliteLayer
+  };
+  L.control.layers(baseMaps).addTo(map);
 
   map.on("click", (e) => updateLocationFields(e.latlng.lat, e.latlng.lng));
 
