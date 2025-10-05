@@ -583,6 +583,7 @@ body.scrollable-page {
 }
 
 .chart-wrapper {
+  position: relative;
   background-color: var(--bg-white);
   padding: 20px;
   border-radius: 12px;
