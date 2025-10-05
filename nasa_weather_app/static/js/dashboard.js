@@ -10,15 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadingOverlay = document.getElementById("loading-overlay");
 
   // --- DATE CONFIGURATION ---
-  // 1. Set the minimum selectable date to tomorrow.
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const yyyy = tomorrow.getFullYear();
-  const mm = String(tomorrow.getMonth() + 1).padStart(2, "0");
-  const dd = String(tomorrow.getDate()).padStart(2, "0");
-  dateInput.min = `${yyyy}-${mm}-${dd}`;
-
-  // 2. Leave the date field blank by default.
+  // Allow any date to be selected in the calendar.
   dateInput.value = "";
 
   // --- Map and search logic ---
