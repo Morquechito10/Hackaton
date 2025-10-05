@@ -1,3 +1,30 @@
+.search-location-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+#location-search {
+  padding-right: 36px;
+}
+#current-location-button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#current-location-button i {
+  font-size: 18px;
+  color: var(--color-primary);
+}
 #current-location-button {
   margin-left: 4px;
 }
@@ -179,6 +206,7 @@ button {
 #search-button {
   flex: 1;
   height: 40px;
+  width: 60px;
   font-size: 1rem;
   background-color: var(--color-primary);
   color: var(--text-on-primary);

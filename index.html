@@ -30,13 +30,17 @@
             <form id="location-form">
               <label for="location-search">Search for a location:</label>
               <div class="search-container">
-                <input
-                  type="text"
-                  id="location-search"
-                  placeholder="E.g.: Times Square, New York"
-                />
+                <div class="search-location-wrapper">
+                  <input
+                    type="text"
+                    id="location-search"
+                    placeholder="E.g.: Times Square, New York"
+                  />
+                  <button type="button" id="current-location-button" title="Use my location">
+                    <i class="fa-solid fa-location-dot"></i>
+                  </button>
+                </div>
                 <button type="submit" id="search-button">Search</button>
-                <button type="button" id="current-location-button" style="margin-left:4px;">Use my location</button>
               </div>
             </form>
 
