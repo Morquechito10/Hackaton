@@ -1,29 +1,71 @@
+/* ==========================================================================
+   ESTILOS PARA EL CAMPO DE BÚSQUEDA CON ÍCONO
+   ========================================================================== */
+
+/* Contenedor principal que alinea el campo de texto y el botón de búsqueda */
+.search-container {
+  display: flex;
+  align-items: center; /* <-- Clave para la alineación vertical */
+  gap: 0;
+}
+
+/* Envoltorio para el input y el botón de ubicación */
 .input-location-wrapper {
-  position: relative;
+  position: relative; /* Necesario para posicionar el botón del ícono adentro */
   width: 100%;
 }
+
+/* Estilo del campo de texto */
 #location-search {
-  padding-left: 36px;
+  height: 40px; /* Misma altura que el botón "Search" */
+  width: 100%;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px 0 0 6px; /* Bordes redondeados solo a la izquierda */
+  box-sizing: border-box;
+  
+  /* Hacemos espacio a la izquierda para el ícono */
+  padding-left: 40px; 
 }
+
+/* Botón para obtener la ubicación actual */
 #current-location-button {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: absolute; /* Posicionamiento sobre el input */
+  left: 0;
+  top: 0;
+  height: 100%; /* Ocupa toda la altura del input */
+  width: 40px;  /* Ancho para el área clickeable */
+  
+  /* Reseteo de estilos de botón */
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  height: 24px;
-  width: 24px;
+  
+  /* Centrado del ícono dentro del botón */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
 }
-#current-location-button i {
-  font-size: 18px;
-  color: #d3d3d3;
+
+/* Estilo del ícono (imagen) */
+#current-location-button img {
+  width: 20px;  /* Tamaño del ícono */
+  height: 20px;
+  
+  /* Filtro para convertir la imagen negra a roja */
+  filter: invert(15%) sepia(90%) saturate(7500%) hue-rotate(355deg) brightness(100%) contrast(100%);
+  transition: transform 0.2s ease;
+}
+
+#current-location-button:hover img {
+  transform: scale(1.1); /* Efecto visual al pasar el mouse */
+}
+
+/* Ajuste para que el botón "Search" no tenga el input encima */
+#search-button {
+    position: relative;
+    z-index: 2;
 }
 .input-location-wrapper {
   position: relative;
