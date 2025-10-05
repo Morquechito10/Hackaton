@@ -3,7 +3,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsContent = document.getElementById('results-content');
     const chartsSection = document.getElementById('charts-section');
     const actionsSection = document.getElementById('actions-section');
-    
+    const modalContainer = document.getElementById('settings-modal-container');
+
+    // --- Definición de todas las métricas disponibles ---
+    // Esto nos ayudará a generar las tarjetas y el modal de configuración dinámicamente.
+    const ALL_METRICS = {
+        main: [
+            { key: 'temperatura_media', label: 'Temperatura', icon: '🌡️', theme: 'card-temp' },
+            { key: 'prob_lluvia', label: 'Prob. Lluvia', icon: '💧', theme: 'card-rain' },
+            { key: 'indice_uv', label: 'Índice UV', icon: '☀️', theme: 'card-uv' },
+            { key: 'viento_velocidad_media', label: 'Viento', icon: '💨', theme: 'card-wind' },
+        ],
+        other: [
+            { key: 'humedad_relativa_media', label: 'Humedad', icon: '💧', theme: 'card-humidity' },
+            { key: 'cobertura_nubosa', label: 'Nubes', icon: '☁️', theme: 'card-clouds' },
+            { key: 'calidad_aire', label: 'Calidad del Aire', icon: '🍃', theme: 'card-air' },
+            { key: 'concentracion_polvo', label: 'Polvo', icon: '🏜️', theme: 'card-dust' },
+            { key: 'prob_calor_extremo', label: 'Calor Extremo', icon: '🔥', theme: 'card-heat' },
+            { key: 'prob_frio_extremo', label: 'Frío Extremo', icon: '🥶', theme: 'card-cold' },
+            { key: 'prob_nieve', label: 'Nieve', icon: '❄️', theme: 'card-snow' },
+        ]
+    };
+
     // --- Lógica Principal ---
     const resultsDataString = sessionStorage.getItem('weatherData');
     if (!resultsDataString) {
@@ -12,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const result = JSON.parse(resultsDataString);
     displayResults(result);
+    setupSettingsModal(result.datos_nasa); // Nueva función para inicializar el modal
 
     // --- Funciones Helper ---
     function getWeatherImagePath(sensacionClimatica) {
@@ -46,7 +68,82 @@ document.addEventListener('DOMContentLoaded', () => {
         return hourlyTemps;
     }
 
-    // --- Lógica de Visualización ---
+    // --- Lógica de Preferencias del Usuario ---
+    /**
+     * Obtiene las preferencias de visibilidad de métricas desde localStorage.
+     * Si no existen, las crea mostrando todas por defecto.
+     */
+    function getMetricPreferences() {
+        let prefs = localStorage.getItem('metricPreferences');
+        if (!prefs) {
+            prefs = {};
+            [...ALL_METRICS.main, ...ALL_METRICS.other].forEach(metric => {
+                prefs[metric.key] = true; // Por defecto, todas son visibles
+            });
+            localStorage.setItem('metricPreferences', JSON.stringify(prefs));
+            return prefs;
+        }
+        return JSON.parse(prefs);
+    }
+
+    /**
+     * Guarda las nuevas preferencias en localStorage.
+     * @param {object} newPrefs - El nuevo objeto de preferencias.
+     */
+    function saveMetricPreferences(newPrefs) {
+        localStorage.setItem('metricPreferences', JSON.stringify(newPrefs));
+    }
+
+    // --- Lógica de Renderizado de Tarjetas ---
+    /**
+     * Crea el HTML para una tarjeta de métrica individual.
+     * @param {object} metric - El objeto de la métrica de ALL_METRICS.
+     * @param {object} data - Los datos de la API de NASA.
+     */
+    function createMetricCardHTML(metric, data) {
+        const value = data[metric.key];
+        let details = '';
+        // Añadir detalles específicos para ciertas tarjetas
+        if (metric.key === 'temperatura_media') details = `<small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small>`;
+        if (metric.key === 'prob_lluvia') details = `<small>Precipitación: ${data.precipitacion_media} mm</small>`;
+        if (metric.key === 'viento_velocidad_media') details = `<small>Prob. Fuertes: ${data.prob_vientos_fuertes}%</small>`;
+
+        return `
+            <div class="metric-card ${metric.theme}">
+                <div class="icon-wrapper">${metric.icon}</div>
+                <p class="metric-label">${metric.label}</p>
+                <p class="metric-value">${value}</p>
+                ${details}
+            </div>
+        `;
+    }
+
+    /**
+     * Renderiza las tarjetas de métricas en el DOM basándose en las preferencias del usuario.
+     * @param {object} data - Los datos de la API de NASA.
+     */
+    function renderMetricCards(data) {
+        const preferences = getMetricPreferences();
+        const mainMetricsContainer = document.getElementById('main-metrics-grid');
+        const otherMetricsContainer = document.getElementById('other-metrics-grid');
+        
+        mainMetricsContainer.innerHTML = '';
+        otherMetricsContainer.innerHTML = '';
+
+        ALL_METRICS.main.forEach(metric => {
+            if (preferences[metric.key]) {
+                mainMetricsContainer.innerHTML += createMetricCardHTML(metric, data);
+            }
+        });
+
+        ALL_METRICS.other.forEach(metric => {
+            if (preferences[metric.key]) {
+                otherMetricsContainer.innerHTML += createMetricCardHTML(metric, data);
+            }
+        });
+    }
+
+    // --- Lógica de Visualización Principal (Refactorizada) ---
     function displayResults(result) {
         const data = result.datos_nasa;
         const recommendation = result.recomendaciones_ai;
@@ -58,22 +155,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainWeatherIcon = getWeatherIcon(data);
         const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
         
+        // El HTML ahora tiene contenedores vacíos para las tarjetas y un botón de configuración.
         resultsContent.innerHTML = `
-            <div class="summary-card"><div class="summary-icon">${mainWeatherIcon}</div><div class="summary-details"><p class="summary-location">${locationName}</p><p class="summary-date">${formattedDate}</p><p class="summary-temp">${data.temperatura_media}°C</p><p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p></div><img src="${weatherImagePath}" alt="Ilustración del Clima" class="summary-illustration-img"></div><hr class="divider"><h4>Métricas Clave</h4><div class="results-grid">
-                <div class="metric-card card-temp"><div class="icon-wrapper">🌡️</div><p class="metric-label">Temperatura</p><p class="metric-value">${data.temperatura_media}°C</p><small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small></div>
-                <div class="metric-card card-rain"><div class="icon-wrapper">💧</div><p class="metric-label">Prob. Lluvia</p><p class="metric-value">${data.prob_lluvia}%</p><small>Precipitación: ${data.precipitacion_media} mm</small></div>
-                <div class="metric-card card-uv"><div class="icon-wrapper">☀️</div><p class="metric-label">Índice UV</p><p class="metric-value">${data.indice_uv}</p><small>Radiación Solar</small></div>
-                <div class="metric-card card-wind"><div class="icon-wrapper">💨</div><p class="metric-label">Viento</p><p class="metric-value">${data.viento_velocidad_media} m/s</p><small>Prob. Fuertes: ${data.prob_vientos_fuertes}%</small></div>
-            </div><hr class="divider"><h4>Otras Métricas</h4><div class="results-grid">
-                <div class="metric-card card-humidity"><div class="icon-wrapper">💧</div><p class="metric-label">Humedad</p><p class="metric-value">${data.humedad_relativa_media}%</p><small>Relativa promedio</small></div>
-                <div class="metric-card card-clouds"><div class="icon-wrapper">☁️</div><p class="metric-label">Nubes</p><p class="metric-value">${data.cobertura_nubosa}%</p><small>Cobertura Nubosa</small></div>
-                <div class="metric-card card-air"><div class="icon-wrapper">🍃</div><p class="metric-label">Calidad del Aire</p><p class="metric-value">${data.calidad_aire}</p><small>Índice de calidad</small></div>
-                <div class="metric-card card-dust"><div class="icon-wrapper">🏜️</div><p class="metric-label">Polvo</p><p class="metric-value">${data.concentracion_polvo}</p><small>Concentración</small></div>
-                <div class="metric-card card-heat"><div class="icon-wrapper">🔥</div><p class="metric-label">Calor Extremo</p><p class="metric-value">${data.prob_calor_extremo}%</p><small>Probabilidad</small></div>
-                <div class="metric-card card-cold"><div class="icon-wrapper">🥶</div><p class="metric-label">Frío Extremo</p><p class="metric-value">${data.prob_frio_extremo}%</p><small>Probabilidad</small></div>
-                <div class="metric-card card-snow"><div class="icon-wrapper">❄️</div><p class="metric-label">Nieve</p><p class="metric-value">${data.prob_nieve}%</p><small>Probabilidad</small></div>
-            </div><hr class="divider"><h4>Recomendación con IA 💡</h4><p class="recommendation">${recommendation}</p>
+            <div class="summary-card">
+                <div class="summary-icon">${mainWeatherIcon}</div>
+                <div class="summary-details">
+                    <p class="summary-location">${locationName}</p>
+                    <p class="summary-date">${formattedDate}</p>
+                    <p class="summary-temp">${data.temperatura_media}°C</p>
+                    <p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p>
+                </div>
+                <img src="${weatherImagePath}" alt="Ilustración del Clima" class="summary-illustration-img">
+            </div>
+            <hr class="divider">
+            <div class="settings-container">
+                <h4>Métricas Clave</h4>
+                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Configurar</button>
+            </div>
+            <div class="results-grid" id="main-metrics-grid"></div>
+            <hr class="divider">
+            <h4>Otras Métricas</h4>
+            <div class="results-grid" id="other-metrics-grid"></div>
+            <hr class="divider">
+            <h4>Recomendación con IA 💡</h4>
+            <p class="recommendation">${recommendation}</p>
         `;
+
+        // Llamamos a la nueva función para que llene los contenedores de tarjetas.
+        renderMetricCards(data);
 
         chartsSection.innerHTML = `<hr class="divider"><h4>Visualización Gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
         
@@ -83,12 +192,59 @@ document.addEventListener('DOMContentLoaded', () => {
         addDownloadListeners(result);
     }
     
+    // --- Lógica del Modal de Configuración ---
+    function setupSettingsModal(data) {
+        const preferences = getMetricPreferences();
+        // Crear el HTML del modal dinámicamente
+        let checkboxesHTML = '';
+        [...ALL_METRICS.main, ...ALL_METRICS.other].forEach(metric => {
+            const isChecked = preferences[metric.key] ? 'checked' : '';
+            checkboxesHTML += `
+                <li class="metric-toggle-item">
+                    <label>
+                        <input type="checkbox" data-key="${metric.key}" ${isChecked}>
+                        ${metric.label}
+                    </label>
+                </li>
+            `;
+        });
+
+        modalContainer.innerHTML = `
+            <div class="modal-overlay" id="settings-modal">
+                <div class="modal-content">
+                    <div class="modal-header"><h3>Personalizar Métricas</h3></div>
+                    <div class="modal-body">
+                        <ul class="metric-toggle-list">${checkboxesHTML}</ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modal-close" class="download-button modal-button">Cancelar</button>
+                        <button id="modal-save" class="download-button modal-button">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Añadir Event Listeners
+        const modal = document.getElementById('settings-modal');
+        document.getElementById('open-settings-btn').addEventListener('click', () => modal.classList.add('visible'));
+        document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('visible'));
+        document.getElementById('modal-save').addEventListener('click', () => {
+            const newPrefs = {};
+            document.querySelectorAll('.metric-toggle-item input').forEach(input => {
+                newPrefs[input.dataset.key] = input.checked;
+            });
+            saveMetricPreferences(newPrefs);
+            renderMetricCards(data); // Re-renderizar las tarjetas con las nuevas preferencias
+            modal.classList.remove('visible');
+        });
+    }
+
+    // --- Funciones de Gráficas y Descarga ---
     function createCharts(data) {
         if (typeof ChartDataLabels !== 'undefined') {
             Chart.register(ChartDataLabels);
         }
         
-        // Gráfica 1: Barras de Temperatura Diaria
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         const hourlyTemps = generateHourlyTemperatures(data.temperatura_minima, data.temperatura_maxima);
         const hoursLabels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
@@ -126,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Gráfica 2: Dona de Condiciones Atmosféricas
         const condCtx = document.getElementById('conditionsChart').getContext('2d');
         new Chart(condCtx, {
             type: 'doughnut',
@@ -174,7 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica de Descarga ---
     function addDownloadListeners(result) {
         document.getElementById('download-pdf').addEventListener('click', () => handlePdfDownload(result));
         document.getElementById('download-csv').addEventListener('click', () => handleCsvDownload(result));
