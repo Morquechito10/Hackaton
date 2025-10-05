@@ -6,25 +6,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const latInput = document.getElementById('latitude');
     const lonInput = document.getElementById('longitude');
     const dateInput = document.getElementById('date');
-    // Establecer el mínimo al día siguiente
+    const analyzeButton = document.getElementById('analyze-button');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // --- CONFIGURACIÓN DE LA FECHA ---
+    // 1. Establece la fecha mínima seleccionable en mañana.
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const yyyy = tomorrow.getFullYear();
     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
     const dd = String(tomorrow.getDate()).padStart(2, '0');
     dateInput.min = `${yyyy}-${mm}-${dd}`;
-    dateInput.value = ""; // <-- Deja el campo de fecha en blanco por defecto
-    const analyzeButton = document.getElementById('analyze-button');
-    const loadingOverlay = document.getElementById('loading-overlay'); // Para la pantalla de carga
+    
+    // 2. Deja el campo de fecha en blanco por defecto.
+    dateInput.value = ""; 
 
-    // --- Lógica del mapa y búsqueda (sin cambios) ---
+    // --- Lógica del mapa y búsqueda ---
     const map = L.map('map').setView([23.6345, -102.5528], 5);
     let marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(map);
-    dateInput.value = getTodayDateString();
+
     map.on('click', (e) => updateLocationFields(e.latlng.lat, e.latlng.lng));
+    
     searchForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const locationName = searchInput.value;
@@ -39,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else { throw new Error('No se encontraron resultados.'); }
         } catch (error) { alert(error.message); }
     });
+
     async function updateLocationFields(lat, lon, displayName = null) {
         latInput.value = parseFloat(lat).toFixed(6);
         lonInput.value = parseFloat(lon).toFixed(6);
@@ -53,9 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { locationDisplayInput.value = displayName; }
     }
 
-    // =================================================================
-    //  MODIFICACIÓN PRINCIPAL: Evento del botón "Analizar"
-    // =================================================================
+    // --- Evento del botón "Analizar" ---
     analyzeButton.addEventListener('click', async () => {
         const lat = latInput.value;
         const lon = lonInput.value;
@@ -65,12 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 1. Mostrar pantalla de carga
         loadingOverlay.style.display = 'flex';
         analyzeButton.disabled = true;
 
         try {
-            const apiUrl = 'https://wirop-api-production.up.railway.app/clima'; // URL de la API
+            const apiUrl = 'https://wirop-api-production.up.railway.app/clima';
             const requestData = { latitud: parseFloat(lat), longitud: parseFloat(lon), fecha: date };
 
             const response = await fetch(apiUrl, {
@@ -85,22 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
-
-            console.log('Respuesta de la API:', result); // <-- Imprime la respuesta en la consola
             
-            // 2. Añadir datos extra al resultado para pasarlos a la siguiente página
             result.locationName = locationDisplayInput.value || "la ubicación seleccionada";
             result.date = date;
 
-            // 3. Guardar los datos en sessionStorage
             sessionStorage.setItem('weatherData', JSON.stringify(result));
 
-            // 4. Redirigir a la página de resultados
             window.location.href = "nasa_weather_app/templates/results.html";
 
         } catch (error) {
             alert(`Error: ${error.message}`);
-            // Ocultar la pantalla de carga si hay un error
             loadingOverlay.style.display = 'none';
         } finally {
             analyzeButton.disabled = false;
@@ -117,17 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 map.setView([lat, lon], 13);
             },
             (error) => {
-                // Si el usuario rechaza, se mantiene la vista por defecto
                 console.warn("No se pudo obtener la ubicación:", error.message);
             }
         );
-    }
-
-    // La función displayResults ya no se necesita en este archivo.
-    
-    function getTodayDateString() {
-        const today = new Date();
-        const offset = today.getTimezoneOffset();
-        return new Date(today.getTime() - (offset * 60 * 1000)).toISOString().split('T')[0];
     }
 });
