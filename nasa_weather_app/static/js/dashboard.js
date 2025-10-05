@@ -84,12 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Ocurrió un error al consultar la API.');
+                throw new Error(errorData.detail || 'An error occurred while querying the API.');
             }
 
             const result = await response.json();
             
-            result.locationName = locationDisplayInput.value || "la ubicación seleccionada";
+            result.locationName = locationDisplayInput.value || "selected location";
             result.date = date;
 
             sessionStorage.setItem('weatherData', JSON.stringify(result));
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Geolocalización automática ---
+    // --- Automatic geolocation ---
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 map.setView([lat, lon], 13);
             },
             (error) => {
-                console.warn("No se pudo obtener la ubicación:", error.message);
+                console.warn("Could not get location:", error.message);
             }
         );
     }
