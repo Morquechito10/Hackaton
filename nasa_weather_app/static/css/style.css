@@ -1,3 +1,9 @@
+#search-location-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
 .search-location-wrapper {
   position: relative;
   width: 100%;
@@ -14,10 +20,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 #current-location-button i {
   font-size: 20px;
   color: #d3d3d3;
+  vertical-align: middle;
 }
 #location-search {
   flex: 1;
@@ -26,6 +35,7 @@
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding-left: 8px;
+  box-sizing: border-box;
 }
 #current-location-button {
   margin-left: 4px;
