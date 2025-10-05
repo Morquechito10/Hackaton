@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const result = JSON.parse(resultsDataString);
     displayResults(result);
-    setupSettingsModal(result.datos_nasa); // Nueva función para inicializar el modal
+    setupSettingsModal(result.datos_nasa);
 
     // --- Funciones Helper ---
     function getWeatherImagePath(sensacionClimatica) {
@@ -69,10 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Lógica de Preferencias del Usuario ---
-    /**
-     * Obtiene las preferencias de visibilidad de métricas desde localStorage.
-     * Si no existen, las crea mostrando todas por defecto.
-     */
     function getMetricPreferences() {
         let prefs = localStorage.getItem('metricPreferences');
         if (!prefs) {
@@ -86,24 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return JSON.parse(prefs);
     }
 
-    /**
-     * Guarda las nuevas preferencias en localStorage.
-     * @param {object} newPrefs - El nuevo objeto de preferencias.
-     */
     function saveMetricPreferences(newPrefs) {
         localStorage.setItem('metricPreferences', JSON.stringify(newPrefs));
     }
 
     // --- Lógica de Renderizado de Tarjetas ---
-    /**
-     * Crea el HTML para una tarjeta de métrica individual.
-     * @param {object} metric - El objeto de la métrica de ALL_METRICS.
-     * @param {object} data - Los datos de la API de NASA.
-     */
     function createMetricCardHTML(metric, data) {
         const value = data[metric.key];
         let details = '';
-        // Añadir detalles específicos para ciertas tarjetas
         if (metric.key === 'temperatura_media') details = `<small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small>`;
         if (metric.key === 'prob_lluvia') details = `<small>Precipitación: ${data.precipitacion_media} mm</small>`;
         if (metric.key === 'viento_velocidad_media') details = `<small>Prob. Fuertes: ${data.prob_vientos_fuertes}%</small>`;
@@ -118,10 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    /**
-     * Renderiza las tarjetas de métricas en el DOM basándose en las preferencias del usuario.
-     * @param {object} data - Los datos de la API de NASA.
-     */
     function renderMetricCards(data) {
         const preferences = getMetricPreferences();
         const mainMetricsContainer = document.getElementById('main-metrics-grid');
@@ -143,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica de Visualización Principal (Refactorizada) ---
+    // --- Lógica de Visualización Principal ---
     function displayResults(result) {
         const data = result.datos_nasa;
         const recommendation = result.recomendaciones_ai;
@@ -155,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainWeatherIcon = getWeatherIcon(data);
         const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
         
-        // El HTML ahora tiene contenedores vacíos para las tarjetas y un botón de configuración.
         resultsContent.innerHTML = `
             <div class="summary-card">
                 <div class="summary-icon">${mainWeatherIcon}</div>
@@ -181,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="recommendation">${recommendation}</p>
         `;
 
-        // Llamamos a la nueva función para que llene los contenedores de tarjetas.
         renderMetricCards(data);
 
         chartsSection.innerHTML = `<hr class="divider"><h4>Visualización Gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
@@ -195,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica del Modal de Configuración ---
     function setupSettingsModal(data) {
         const preferences = getMetricPreferences();
-        // Crear el HTML del modal dinámicamente
         let checkboxesHTML = '';
         [...ALL_METRICS.main, ...ALL_METRICS.other].forEach(metric => {
             const isChecked = preferences[metric.key] ? 'checked' : '';
@@ -224,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // Añadir Event Listeners
         const modal = document.getElementById('settings-modal');
         document.getElementById('open-settings-btn').addEventListener('click', () => modal.classList.add('visible'));
         document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('visible'));
@@ -234,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newPrefs[input.dataset.key] = input.checked;
             });
             saveMetricPreferences(newPrefs);
-            renderMetricCards(data); // Re-renderizar las tarjetas con las nuevas preferencias
+            renderMetricCards(data);
             modal.classList.remove('visible');
         });
     }
@@ -245,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Chart.register(ChartDataLabels);
         }
         
+        // Gráfica 1: Barras de Temperatura Diaria
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         const hourlyTemps = generateHourlyTemperatures(data.temperatura_minima, data.temperatura_maxima);
         const hoursLabels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
@@ -282,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Gráfica 2: Dona de Condiciones Atmosféricas
         const condCtx = document.getElementById('conditionsChart').getContext('2d');
         new Chart(condCtx, {
             type: 'doughnut',
@@ -334,6 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('download-csv').addEventListener('click', () => handleCsvDownload(result));
         document.getElementById('download-json').addEventListener('click', () => handleJsonDownload(result));
     }
+
     function triggerDownload(content, fileName, contentType) {
         const a = document.createElement("a");
         const file = new Blob([content], { type: contentType });
@@ -341,10 +322,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
     }
+
     function handleJsonDownload(result) {
         const jsonData = JSON.stringify(result, null, 2);
         triggerDownload(jsonData, 'reporte_climatico.json', 'application/json');
     }
+
     function handleCsvDownload(result) {
         let csvContent = "Metrica,Valor\n";
         const dataToExport = result.datos_nasa;
@@ -354,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         csvContent += `recomendaciones_ai,"${result.recomendaciones_ai}"\n`;
         triggerDownload(csvContent, 'reporte_climatico.csv', 'text/csv;charset=utf-8;');
     }
+    
     function handlePdfDownload(result) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
