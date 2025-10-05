@@ -1,3 +1,9 @@
+.location-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
+  vertical-align: middle;
+}
 .input-location-wrapper {
   position: relative;
   width: 100%;
