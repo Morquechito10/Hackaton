@@ -77,6 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
+
+            console.log('Respuesta de la API:', result); // <-- Imprime la respuesta en la consola
             
             // 2. Añadir datos extra al resultado para pasarlos a la siguiente página
             result.locationName = locationDisplayInput.value || "la ubicación seleccionada";
