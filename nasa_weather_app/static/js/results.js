@@ -1,15 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Selectores de Elementos ---
     const resultsContent = document.getElementById('results-content');
-    const downloadPdfBtn = document.getElementById('download-pdf');
-    const downloadCsvBtn = document.getElementById('download-csv');
-    const downloadJsonBtn = document.getElementById('download-json');
+    const chartsSection = document.getElementById('charts-section');
+    const actionsSection = document.getElementById('actions-section');
 
     // =================================================================
-    // NUEVA LÓGICA: DEFINICIÓN DE TARJETAS Y MANEJO DE PREFERENCIAS
+    // LÓGICA PARA TARJETAS PERSONALIZABLES
     // =================================================================
 
-    // Objeto central que define todas las tarjetas disponibles
     const ALL_METRICS = {
         main: {
             temperatura: (data) => `<div class="metric-card"><div class="icon-wrapper">🌡️</div><p class="metric-label">Temperatura</p><p class="metric-value">${data.temperatura_media}°C</p><small>Min: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small></div>`,
@@ -28,13 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Obtiene las preferencias del usuario del localStorage o crea unas por defecto
     function getMetricPreferences() {
         let prefs = localStorage.getItem('metricPreferences');
         if (!prefs) {
             prefs = {};
             [...Object.keys(ALL_METRICS.main), ...Object.keys(ALL_METRICS.other)].forEach(key => {
-                prefs[key] = true; // Por defecto, todas son visibles
+                prefs[key] = true;
             });
             localStorage.setItem('metricPreferences', JSON.stringify(prefs));
             return prefs;
@@ -42,12 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return JSON.parse(prefs);
     }
 
-    // Guarda las nuevas preferencias
     function saveMetricPreferences(newPrefs) {
         localStorage.setItem('metricPreferences', JSON.stringify(newPrefs));
     }
 
-    // Dibuja las tarjetas en el DOM según las preferencias
     function renderMetricCards(data) {
         const preferences = getMetricPreferences();
         const mainMetricsContainer = document.getElementById('main-metrics-grid');
@@ -61,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 mainMetricsContainer.innerHTML += ALL_METRICS.main[key](data);
             }
         }
-
         for (const key in ALL_METRICS.other) {
             if (preferences[key]) {
                 otherMetricsContainer.innerHTML += ALL_METRICS.other[key](data);
@@ -69,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Crea y maneja el modal de configuración
     function setupSettingsModal(resultData) {
         const preferences = getMetricPreferences();
         const modalContainer = document.createElement('div');
@@ -115,32 +108,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =================================================================
-    // LÓGICA ESTABLE EXISTENTE (CON LIGERAS MODIFICACIONES)
-    // =================================================================
-
     // --- Lógica Principal ---
     const resultsDataString = sessionStorage.getItem('weatherData');
     if (!resultsDataString) {
         resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor, <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
-        if (downloadPdfBtn) document.querySelector('.action-buttons-container').style.display = 'none';
         return;
     }
     const result = JSON.parse(resultsDataString);
-    displayResults(result); // Dibuja la estructura y las tarjetas iniciales
-    setupSettingsModal(result); // Prepara el modal
+    
+    // 1. Dibuja la estructura principal
+    displayResults(result); 
+    
+    // 2. Prepara el modal de configuración
+    setupSettingsModal(result);
+    
+    // 3. Dibuja las gráficas y prepara los botones de descarga
+    createCharts(result.datos_nasa);
+    addDownloadListeners(result);
 
-    // --- Funciones Helper (SIN CAMBIOS) ---
-    function getWeatherImagePath(sensacionClimatica) { /* ...código original sin cambios... */ 
-        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return 'static/images/agradable.png';
+    // --- Funciones Helper ---
+    function getWeatherImagePath(sensacionClimatica) {
+        // Rutas corregidas con ../ para Netlify
+        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return '../static/images/agradable.png';
         const imageMap = {
-            'muy caluroso': 'static/images/caluroso.png','muy incómodo': 'static/images/incomodo.png',
-            'muy frío': 'static/images/frio.png','muy húmedo': 'static/images/humedo.png',
-            'ventoso': 'static/images/ventoso.png','agradable': 'static/images/agradable.png'
+            'muy caluroso': '../static/images/caluroso.png',
+            'muy incómodo': '../static/images/incomodo.png',
+            'muy frío': '../static/images/frio.png',
+            'muy húmedo': '../static/images/humedo.png',
+            'ventoso': '../static/images/ventoso.png',
+            'agradable': '../static/images/agradable.png'
         };
-        return imageMap[sensacionClimatica.toLowerCase()] || 'static/images/agradable.png';
+        return imageMap[sensacionClimatica.toLowerCase()] || '../static/images/agradable.png';
     }
-    function getWeatherIcon(data) { /* ...código original sin cambios... */ 
+    function getWeatherIcon(data) {
         if (data.prob_lluvia > 40 || data.precipitacion_media > 1.5) return '🌧️';
         if (data.prob_nieve > 10) return '❄️';
         if (data.cobertura_nubosa > 60) return '☁️';
@@ -149,8 +149,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.temperatura_media < 10) return '🥶';
         return '☀️';
     }
+    function generateHourlyTemperatures(minTemp, maxTemp) {
+        const avgTemp = (minTemp + maxTemp) / 2;
+        const amplitude = (maxTemp - minTemp) / 2;
+        const hourlyTemps = [];
+        for (let hour = 0; hour < 24; hour++) {
+            const temp = avgTemp - amplitude * Math.cos(2 * Math.PI * (hour - 5) / 24);
+            hourlyTemps.push(parseFloat(temp.toFixed(2))); 
+        }
+        return hourlyTemps;
+    }
 
-    // --- Lógica de Visualización (MODIFICADA para ser un "template") ---
+
+    // --- Lógica de Visualización ---
     function displayResults(result) {
         const data = result.datos_nasa;
         const recommendation = result.recomendaciones_ai;
@@ -162,8 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainWeatherIcon = getWeatherIcon(data);
         const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
         
-        // El HTML ahora solo contiene la estructura y los contenedores para las tarjetas
-        let htmlContent = `
+        resultsContent.innerHTML = `
             <div class="summary-card">
                 <div class="summary-icon">${mainWeatherIcon}</div>
                 <div class="summary-details">
@@ -189,42 +199,54 @@ document.addEventListener('DOMContentLoaded', () => {
             <h4>Recomendación con IA 💡</h4>
             <p class="recommendation">${recommendation}</p>
         `;
-        resultsContent.innerHTML = htmlContent;
         
-        // Llamamos a la función que dibuja las tarjetas por primera vez
         renderMetricCards(data);
     }
     
-    // =================================================================
-    //  LÓGICA PARA LA DESCARGA DE ARCHIVOS 
-    // =================================================================
+    // --- Lógica de Gráficas y Descargas (RESTAURADA) ---
+    function createCharts(data) {
+        chartsSection.innerHTML = `<hr class="divider"><h4>Visualización Gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
+        if (typeof ChartDataLabels !== 'undefined') {
+            Chart.register(ChartDataLabels);
+        }
+        
+        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+        const hourlyTemps = generateHourlyTemperatures(data.temperatura_minima, data.temperatura_maxima);
+        const hoursLabels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+        new Chart(tempCtx, { type: 'bar', data: { labels: hoursLabels, datasets: [{ label: 'Temperatura (°C)', data: hourlyTemps, backgroundColor: 'rgba(67, 105, 215, 0.7)', borderColor: 'rgba(67, 105, 215, 1)', borderWidth: 1 }] }, options: { maintainAspectRatio: false, responsive: true, scales: { y: { title: { display: true, text: 'Temperatura (°C)' } }, x: { title: { display: true, text: 'Hora del Día' }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } } }, plugins: { title: { display: true, text: '📈 Estimación de Temperatura Diaria', font: { size: 18 }, padding: { bottom: 25 } }, legend: { display: false }, tooltip: { callbacks: { label: (context) => ` Temperatura: ${context.parsed.y}°C` } }, datalabels: { display: false } } } });
 
-    function triggerDownload(content, fileName, contentType) { /* ...código original sin cambios... */ 
+        const condCtx = document.getElementById('conditionsChart').getContext('2d');
+        new Chart(condCtx, { type: 'doughnut', data: { labels: ['💧 Humedad', '☁️ Nubes', '☀️ Índice UV', '💨 Viento'], datasets: [{ label: 'Condiciones', data: [data.humedad_relativa_media, data.cobertura_nubosa, data.indice_uv * 10, data.viento_velocidad_media * 5], backgroundColor: ['#4ecdc4', '#95a5a6', '#f39c12', '#3498db'], borderWidth: 3, borderColor: '#fff', hoverOffset: 15 }] }, options: { maintainAspectRatio: false, responsive: true, plugins: { title: { display: true, text: '🌍 Perfil Atmosférico', font: { size: 16, weight: 'bold' }, color: '#212930', padding: { bottom: 20 } }, legend: { display: true, position: 'bottom', labels: { padding: 15, font: { size: 11 }, color: '#495057', usePointStyle: true, pointStyle: 'circle' } }, tooltip: { callbacks: { label: (context) => { const label = context.label || ''; let realValue = ''; if (label.includes('Humedad')) realValue = `${data.humedad_relativa_media}%`; else if (label.includes('Nubes')) realValue = `${data.cobertura_nubosa}%`; else if (label.includes('UV')) realValue = `${data.indice_uv}`; else if (label.includes('Viento')) realValue = `${data.viento_velocidad_media} m/s`; return ` ${label}: ${realValue}`; } } }, datalabels: { color: '#fff', font: { weight: 'bold', size: 13 }, formatter: (value, context) => { const label = context.chart.data.labels[context.dataIndex]; if (label.includes('Humedad')) return data.humedad_relativa_media + '%'; else if (label.includes('Nubes')) return data.cobertura_nubosa + '%'; else if (label.includes('UV')) return data.indice_uv; else if (label.includes('Viento')) return data.viento_velocidad_media + ' m/s'; } } } } });
+    }
+
+    function addDownloadListeners(result) {
+        actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analizar Otra Ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
+        document.getElementById('download-pdf').addEventListener('click', () => handlePdfDownload(result));
+        document.getElementById('download-csv').addEventListener('click', () => handleCsvDownload(result));
+        document.getElementById('download-json').addEventListener('click', () => handleJsonDownload(result));
+    }
+
+    function triggerDownload(content, fileName, contentType) {
         const a = document.createElement("a");
         const file = new Blob([content], { type: contentType });
-        a.href = URL.createObjectURL(file);
-        a.download = fileName;
+        a.href = URL.createObjectURL(file); a.download = fileName;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
     }
-
-    downloadJsonBtn.addEventListener('click', () => { /* ...código original sin cambios... */ 
+    function handleJsonDownload(result) {
         const jsonData = JSON.stringify(result, null, 2);
         triggerDownload(jsonData, 'reporte_climatico.json', 'application/json');
-    });
-
-    downloadCsvBtn.addEventListener('click', () => { /* ...código original sin cambios... */ 
+    }
+    function handleCsvDownload(result) {
         let csvContent = "Metrica,Valor\n";
         const dataToExport = result.datos_nasa;
         for (const key in dataToExport) {
-            const value = `"${dataToExport[key]}"`;
-            csvContent += `${key},${value}\n`;
+            csvContent += `${key},"${dataToExport[key]}"\n`;
         }
         csvContent += `recomendaciones_ai,"${result.recomendaciones_ai}"\n`;
         triggerDownload(csvContent, 'reporte_climatico.csv', 'text/csv;charset=utf-8;');
-    });
-
-    downloadPdfBtn.addEventListener('click', () => { /* ...código original sin cambios... */ 
+    }
+    function handlePdfDownload(result) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const data = result.datos_nasa;
@@ -238,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.setLineWidth(0.5); doc.line(20, 45, 190, 45);
         doc.setFontSize(14); doc.setFont('helvetica', 'bold');
         doc.text("Recomendación del Día", 20, 58);
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+        doc.setFontSize(11); doc.setFont('helvetica', 'normal');
         const recommendationLines = doc.splitTextToSize(result.recomendaciones_ai, 170);
         doc.text(recommendationLines, 20, 65);
         const tableBody = [];
@@ -246,13 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const key in data) {
             tableBody.push([formatKey(key), data[key]]);
         }
-        doc.autoTable({
-            startY: doc.autoTable.previous ? doc.autoTable.previous.finalY + 15 : 90,
-            head: [['Métrica de NASA POWER', 'Valor Registrado']],
-            body: tableBody,
-            theme: 'striped',
-            headStyles: { fillColor: [67, 105, 215] }
-        });
+        const tableStartY = recommendationLines.length * 5 + 75;
+        doc.autoTable({ startY: tableStartY, head: [['Métrica de NASA POWER', 'Valor Registrado']], body: tableBody, theme: 'striped', headStyles: { fillColor: [67, 105, 215] } });
         doc.save('reporte_climatico_completo.pdf');
-    });
+    }
 });
