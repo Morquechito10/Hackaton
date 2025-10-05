@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeButton.disabled = true;
 
         try {
-            const apiUrl = 'https://8000-firebase-wirop-api-1759423835787.cluster-gizzoza7hzhfyxzo5d76y3flkw.cloudworkstations.dev/clima';
+            const apiUrl = 'https://wirop-api-production.up.railway.app/clima'; // URL de la API
             const requestData = { latitud: parseFloat(lat), longitud: parseFloat(lon), fecha: date };
 
             const response = await fetch(apiUrl, {

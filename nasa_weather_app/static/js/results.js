@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica Principal ---
     const resultsDataString = sessionStorage.getItem('weatherData');
     if (!resultsDataString) {
-        resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor, <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
+        resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor, <a href="index.html">regresa</a> y realiza un nuevo análisis.</p>`;
         return;
     }
     const result = JSON.parse(resultsDataString);
@@ -15,16 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Funciones Helper ---
     function getWeatherImagePath(sensacionClimatica) {
-        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return '../static/images/agradable.png';
+        if (typeof sensacionClimatica !== 'string' || sensacionClimatica.trim() === '') return 'static/images/agradable.png';
         const imageMap = {
-            'muy caluroso': '../static/images/caluroso.png',
-            'muy incómodo': '../static/images/incomodo.png',
-            'muy frío': '../static/images/frio.png',
-            'muy húmedo': '../static/images/humedo.png',
-            'ventoso': '../static/images/ventoso.png',
-            'agradable': '../static/images/agradable.png'
+            'muy caluroso': 'static/images/caluroso.png',
+            'muy incómodo': 'static/images/incomodo.png',
+            'muy frío': 'static/images/frio.png',
+            'muy húmedo': 'static/images/humedo.png',
+            'ventoso': 'static/images/ventoso.png',
+            'agradable': 'static/images/agradable.png'
         };
-        return imageMap[sensacionClimatica.toLowerCase()] || '../static/images/agradable.png';
+        return imageMap[sensacionClimatica.toLowerCase()] || 'static/images/agradable.png';
     }
     function getWeatherIcon(data) {
         if (data.prob_lluvia > 40 || data.precipitacion_media > 1.5) return '🌧️';
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         chartsSection.innerHTML = `<hr class="divider"><h4>Visualización Gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
         
-        actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analizar Otra Ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
+        actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="index.html" class="back-button">Analizar Otra Ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
         
         createCharts(data);
         addDownloadListeners(result);
@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
             Chart.register(ChartDataLabels);
         }
         
-        // Gráfica 1: Barras de Temperatura Diaria
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         const hourlyTemps = generateHourlyTemperatures(data.temperatura_minima, data.temperatura_maxima);
         const hoursLabels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
@@ -126,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Gráfica 2: Dona de Condiciones Atmosféricas
         const condCtx = document.getElementById('conditionsChart').getContext('2d');
         new Chart(condCtx, {
             type: 'doughnut',
@@ -135,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Condiciones',
                     data: [data.humedad_relativa_media, data.cobertura_nubosa, data.indice_uv * 10, data.viento_velocidad_media * 5],
-                    backgroundColor: ['#4ecdc4', '#95a5a6', '#f39c12', '#3498db'],
+                    backgroundColor: ['#4ecdc4', '#a9cce3', '#f0ad4e', '#82ccdd'],
                     borderWidth: 3,
                     borderColor: '#fff',
                     hoverOffset: 15
@@ -174,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica de Descarga ---
     function addDownloadListeners(result) {
         document.getElementById('download-pdf').addEventListener('click', () => handlePdfDownload(result));
         document.getElementById('download-csv').addEventListener('click', () => handleCsvDownload(result));
