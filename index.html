@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NASA WIROP Dashboard</title>
+    <title>NASA WIROP Dashboard</title>
 
     <link
       rel="stylesheet"
@@ -11,16 +11,29 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <link rel="stylesheet" href="nasa_weather_app/static/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="nasa_weather_app/static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
   </head>
   <body class="fixed-layout">
     <div class="dashboard-container">
       <div class="left-panel">
         <header>
           <div class="logo-bar">
-            <img src="nasa_weather_app/static/images/LogoNasa.png" id="logo-nasa" alt="Logo NASA" class="header-logo">
-            <img src="nasa_weather_app/static/images/rf_logo.png" id="logo-rf" alt="Logo RF" class="header-logo">
+            <img
+              src="nasa_weather_app/static/images/LogoNasa.png"
+              id="logo-nasa"
+              alt="Logo NASA"
+              class="header-logo"
+            />
+            <img
+              src="nasa_weather_app/static/images/rf_logo.png"
+              id="logo-rf"
+              alt="Logo RF"
+              class="header-logo"
+            />
           </div>
         </header>
 
@@ -31,18 +44,20 @@
             <form id="location-form">
               <label for="location-search">Search for a location:</label>
               <div class="search-container">
-                <div id="search-location-wrapper" class="search-location-wrapper">
-                  
-                  <div class="input-location-wrapper">
-                    <input
-                      type="text"
-                      id="location-search"
-                      placeholder="E.g.: Times Square, New York"
-                    />
-                    <button type="button" id="current-location-button" title="Use my location" aria-label="Use my location">
-                      <i class="fa-solid fa-location-dot"></i>
-                    </button>
-                  </div>
+                <div class="input-location-wrapper">
+                  <button
+                    type="button"
+                    id="current-location-button"
+                    title="Use my location"
+                    aria-label="Use my location"
+                  >
+                    <i class="fa-solid fa-location-dot"></i>
+                  </button>
+                  <input
+                    type="text"
+                    id="location-search"
+                    placeholder="E.g.: Times Square, New York"
+                  />
                 </div>
                 <button type="submit" id="search-button">Search</button>
               </div>
