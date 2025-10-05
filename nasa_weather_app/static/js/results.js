@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <hr class="divider">
             <div class="settings-container">
                 <h4>Métricas Clave</h4>
-                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Editar Metricas</button>
+                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Personalizar Metricas</button>
             </div>
             <div class="results-grid" id="main-metrics-grid"></div>
             <hr class="divider">
