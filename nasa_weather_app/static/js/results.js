@@ -174,30 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
         
         resultsContent.innerHTML = `
-            <div class="summary-card">
-                <div class="summary-icon">${mainWeatherIcon}</div>
-                <div class="summary-details">
-                    <p class="summary-location">${locationName}</p>
-                    <p class="summary-date">${formattedDate}</p>
-                    <p class="summary-temp">${data.temperatura_media}°C</p>
-                    <p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p>
-                </div>
-                <img src="${weatherImagePath}" alt="Ilustración del Clima" class="summary-illustration-img">
+            <button id="open-settings" class="settings-btn">⚙️ Configuración</button>
+            <!-- Aquí van las cards -->
+            <div id="cards-container">
+                <!-- ...cards generadas dinámicamente... -->
             </div>
-            <hr class="divider">
-            <div class="settings-container">
-                <h4>Métricas Clave</h4>
-                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Configurar</button>
-            </div>
-            <div class="results-grid" id="main-metrics-grid"></div>
-            <hr class="divider">
-            <div class="settings-container">
-                 <h4>Otras Métricas</h4>
-            </div>
-            <div class="results-grid" id="other-metrics-grid"></div>
-            <hr class="divider">
-            <h4>Recomendación con IA 💡</h4>
-            <p class="recommendation">${recommendation}</p>
+            <!-- ...resto del contenido... -->
         `;
         
         renderMetricCards(data);
