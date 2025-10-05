@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NASA WIROP Dashboard</title>
+  <title>NASA WIROP Dashboard</title>
 
     <link
       rel="stylesheet"
@@ -11,60 +11,9 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="nasa_weather_app/static/css/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-
-    <style>
-      /* Usamos !important para garantizar que estos estilos ganen cualquier conflicto */
-      
-      #location-form .search-container {
-        display: flex !important;
-        align-items: stretch !important;
-      }
-
-      #location-form .input-with-icon-wrapper {
-        position: relative !important;
-        flex-grow: 1 !important;
-      }
-
-      #location-form #location-search {
-        width: 100% !important;
-        height: 40px !important; /* Altura consistente */
-        padding-left: 40px !important; /* Espacio para el ícono */
-        border-right: none !important;
-        border-radius: 6px 0 0 6px !important;
-        box-sizing: border-box !important;
-      }
-
-      #location-form #current-location-button {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        height: 100% !important;
-        width: 40px !important;
-        background: none !important;
-        border: none !important;
-        padding: 0 !important;
-        cursor: pointer !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      #location-form #current-location-button img {
-        width: 20px !important;
-        height: 20px !important;
-        filter: invert(15%) sepia(90%) saturate(7500%) hue-rotate(355deg) brightness(100%) contrast(100%) !important;
-      }
-      
-      #location-form #search-button {
-        width: 90px !important;
-        height: 40px !important;
-        border-radius: 0 6px 6px 0 !important;
-        flex-shrink: 0; /* Evita que el botón se encoja */
-      }
-    </style>
-    </head>
+  <link rel="stylesheet" href="nasa_weather_app/static/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  </head>
   <body class="fixed-layout">
     <div class="dashboard-container">
       <div class="left-panel">
@@ -81,15 +30,20 @@
 
             <form id="location-form">
               <label for="location-search">Search for a location:</label>
-              <div class="search-bar-row">
-                <button type="button" id="current-location-button" title="Use my location" aria-label="Use my location">
-                  <img src="nasa_weather_app/static/images/target-icon.png" alt="Use current location">
-                </button>
-                <input
-                  type="text"
-                  id="location-search"
-                  placeholder="E.g.: Times Square, New York"
-                />
+              <div class="search-container">
+                <div id="search-location-wrapper" class="search-location-wrapper">
+                  
+                  <div class="input-location-wrapper">
+                    <input
+                      type="text"
+                      id="location-search"
+                      placeholder="E.g.: Times Square, New York"
+                    />
+                    <button type="button" id="current-location-button" title="Use my location" aria-label="Use my location">
+                      <i class="fa-solid fa-location-dot"></i>
+                    </button>
+                  </div>
+                </div>
                 <button type="submit" id="search-button">Search</button>
               </div>
             </form>
