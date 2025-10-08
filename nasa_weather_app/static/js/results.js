@@ -10,20 +10,20 @@ document.addEventListener("DOMContentLoaded", () => {
     main: [
       {
         key: "temperatura_media",
-  label: "Temperatura",
+        label: "Temperatura",
         icon: "🌡️",
         theme: "card-temp",
       },
       {
         key: "prob_lluvia",
-  label: "Probabilidad de lluvia",
+        label: "Probabilidad de lluvia",
         icon: "💧",
         theme: "card-rain",
       },
-  { key: "indice_uv", label: "Índice UV", icon: "☀️", theme: "card-uv" },
+      { key: "indice_uv", label: "Índice UV", icon: "☀️", theme: "card-uv" },
       {
         key: "viento_velocidad_media",
-  label: "Viento",
+        label: "Viento",
         icon: "💨",
         theme: "card-wind",
       },
@@ -31,48 +31,48 @@ document.addEventListener("DOMContentLoaded", () => {
     other: [
       {
         key: "humedad_relativa_media",
-  label: "Humedad",
+        label: "Humedad",
         icon: "💧",
         theme: "card-humidity",
       },
       {
         key: "cobertura_nubosa",
-  label: "Nubosidad",
+        label: "Nubosidad",
         icon: "☁️",
         theme: "card-clouds",
       },
       {
         key: "calidad_aire",
-  label: "Calidad del aire",
+        label: "Calidad del aire",
         icon: "🍃",
         theme: "card-air",
       },
       {
         key: "concentracion_polvo",
-  label: "Polvo",
+        label: "Polvo",
         icon: "🏜️",
         theme: "card-dust",
       },
       {
         key: "prob_calor_extremo",
-  label: "Calor extremo",
+        label: "Calor extremo",
         icon: "🔥",
         theme: "card-heat",
       },
       {
         key: "prob_frio_extremo",
-  label: "Frío extremo",
+        label: "Frío extremo",
         icon: "🥶",
         theme: "card-cold",
       },
-  { key: "prob_nieve", label: "Nieve", icon: "❄️", theme: "card-snow" },
+      { key: "prob_nieve", label: "Nieve", icon: "❄️", theme: "card-snow" },
     ],
   };
 
   // --- Lógica Principal ---
   const resultsDataString = sessionStorage.getItem("weatherData");
   if (!resultsDataString) {
-  resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
+    resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
     return;
   }
   const result = JSON.parse(resultsDataString);
@@ -85,12 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return "../static/images/agradable.png";
     }
     const imageMap = {
-  "muy caluroso": "../static/images/caluroso.jpg",
-  "muy incómodo": "../static/images/incomodo.png",
-  "muy frío": "../static/images/frio.png",
-  "muy húmedo": "../static/images/humedo.png",
-  "ventoso": "../static/images/ventoso.jpg",
-  "agradable": "../static/images/agradable.png",
+      "muy caluroso": "../static/images/caluroso.jpg",
+      "muy incómodo": "../static/images/incomodo.png",
+      "muy frío": "../static/images/frio.png",
+      "muy húmedo": "../static/images/humedo.png",
+      ventoso: "../static/images/ventoso.jpg",
+      agradable: "../static/images/agradable.png",
     };
     const normalizedFeeling = weatherFeeling.toLowerCase();
     return imageMap[normalizedFeeling] || "../static/images/agradable.png";
@@ -139,20 +139,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const value = data[metric.key];
     let details = "";
     if (metric.key === "temperatura_media")
-  details = `<small>Mín: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small>`;
+      details = `<small>Mín: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small>`;
     if (metric.key === "prob_lluvia")
-  details = `<small>Precipitación: ${data.precipitacion_media} mm</small>`;
+      details = `<small>Precipitación: ${data.precipitacion_media} mm</small>`;
     if (metric.key === "viento_velocidad_media")
-  details = `<small>Prob. de vientos fuertes: ${data.prob_vientos_fuertes}%</small>`;
+      details = `<small>Prob. de vientos fuertes: ${data.prob_vientos_fuertes}%</small>`;
 
     return `
-            <div class="metric-card ${metric.theme}">
-                <div class="icon-wrapper">${metric.icon}</div>
-                <p class="metric-label">${metric.label}</p>
-                <p class="metric-value">${value}</p>
-                ${details}
-            </div>
-        `;
+                <div class="metric-card ${metric.theme}">
+                    <div class="icon-wrapper">${metric.icon}</div>
+                    <p class="metric-label">${metric.label}</p>
+                    <p class="metric-value">${value}</p>
+                    ${details}
+                </div>
+            `;
   }
 
   function renderMetricCards(data) {
@@ -184,40 +184,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedDate = result.date;
     const displayDate = new Date(selectedDate + "T12:00:00Z");
     const dateOptions = { year: "numeric", month: "long", day: "numeric" };
-    const formattedDate = displayDate.toLocaleString("en-US", dateOptions);
+    const formattedDate = displayDate.toLocaleString("es-ES", dateOptions); // Cambiado a español
     const mainWeatherIcon = getWeatherIcon(data);
     const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
 
     resultsContent.innerHTML = `
-            <div class="summary-card">
-                <div class="summary-icon">${mainWeatherIcon}</div>
-                <div class="summary-details">
-                    <p class="summary-location">${locationName}</p>
-                    <p class="summary-date">${formattedDate}</p>
-                    <p class="summary-temp">${data.temperatura_media}°C</p>
-                    <p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p>
+                <div class="summary-card">
+                    <div class="summary-icon">${mainWeatherIcon}</div>
+                    <div class="summary-details">
+                        <p class="summary-location">${locationName}</p>
+                        <p class="summary-date">${formattedDate}</p>
+                        <p class="summary-temp">${data.temperatura_media}°C</p>
+                        <p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p>
+                    </div>
+                    <img src="${weatherImagePath}" alt="Weather Illustration" class="summary-illustration-img">
                 </div>
-                <img src="${weatherImagePath}" alt="Weather Illustration" class="summary-illustration-img">
-            </div>
-            <hr class="divider">
-            <div class="settings-container">
-                <h4>Métricas principales</h4>
-                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Personalizar métricas</button>
-            </div>
-            <div class="results-grid" id="main-metrics-grid"></div>
-            <hr class="divider">
-            <h4>Otras métricas</h4>
-            <div class="results-grid" id="other-metrics-grid"></div>
-            <hr class="divider">
-            <h4>Recomendación de IA 💡</h4>
-            <p class="recommendation">${recommendation}</p>
-        `;
+                <hr class="divider">
+                <div class="settings-container">
+                    <h4>Métricas principales</h4>
+                    <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Personalizar métricas</button>
+                </div>
+                <div class="results-grid" id="main-metrics-grid"></div>
+                <hr class="divider">
+                <h4>Otras métricas</h4>
+                <div class="results-grid" id="other-metrics-grid"></div>
+                <hr class="divider">
+                <h4>Recomendación de IA 💡</h4>
+                <p class="recommendation">${recommendation}</p>
+            `;
 
     renderMetricCards(data);
 
-  chartsSection.innerHTML = `<hr class="divider"><h4>Visualización gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
+    chartsSection.innerHTML = `<hr class="divider"><h4>Visualización gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
 
-  actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analizar otra ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
+    actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analizar otra ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
 
     createCharts(data);
     addDownloadListeners(result);
@@ -230,29 +230,29 @@ document.addEventListener("DOMContentLoaded", () => {
     [...ALL_METRICS.main, ...ALL_METRICS.other].forEach((metric) => {
       const isChecked = preferences[metric.key] ? "checked" : "";
       checkboxesHTML += `
-                <li class="metric-toggle-item">
-                    <label>
-                        <input type="checkbox" data-key="${metric.key}" ${isChecked}>
-                        ${metric.label}
-                    </label>
-                </li>
-            `;
+                    <li class="metric-toggle-item">
+                        <label>
+                            <input type="checkbox" data-key="${metric.key}" ${isChecked}>
+                            ${metric.label}
+                        </label>
+                    </li>
+                `;
     });
 
     modalContainer.innerHTML = `
-            <div class="modal-overlay" id="settings-modal">
-                <div class="modal-content">
-                    <div class="modal-header"><h3>Personalizar métricas</h3></div>
-                    <div class="modal-body">
-                        <ul class="metric-toggle-list">${checkboxesHTML}</ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="modal-close" class="download-button modal-button">Cancelar</button>
-                        <button id="modal-save" class="download-button modal-button">Guardar</button>
+                <div class="modal-overlay" id="settings-modal">
+                    <div class="modal-content">
+                        <div class="modal-header"><h3>Personalizar métricas</h3></div>
+                        <div class="modal-body">
+                            <ul class="metric-toggle-list">${checkboxesHTML}</ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="modal-close" class="download-button modal-button">Cancelar</button>
+                            <button id="modal-save" class="download-button modal-button">Guardar</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
 
     const modal = document.getElementById("settings-modal");
     document
@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
         labels: hoursLabels,
         datasets: [
           {
-            label: "Temperature (°C)",
+            label: "Temperatura (°C)", // Español
             data: hourlyTemps,
             backgroundColor: "rgba(67, 105, 215, 0.7)",
             borderColor: "rgba(67, 105, 215, 1)",
@@ -307,23 +307,23 @@ document.addEventListener("DOMContentLoaded", () => {
         maintainAspectRatio: false,
         responsive: true,
         scales: {
-          y: { title: { display: true, text: "Temperature (°C)" } },
+          y: { title: { display: true, text: "Temperatura (°C)" } }, // Español
           x: {
-            title: { display: true, text: "Hour of Day" },
+            title: { display: true, text: "Hora del Día" }, // Español
             ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
           },
         },
         plugins: {
           title: {
             display: true,
-            text: "📈 Daily Temperature Estimate",
+            text: "📈 Estimación de Temperatura Diaria", // Español
             font: { size: 18 },
             padding: { bottom: 25 },
           },
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (context) => ` Temperature: ${context.parsed.y}°C`,
+              label: (context) => ` Temperatura: ${context.parsed.y}°C`, // Español
             },
           },
           datalabels: { display: false },
@@ -335,10 +335,10 @@ document.addEventListener("DOMContentLoaded", () => {
     new Chart(condCtx, {
       type: "doughnut",
       data: {
-        labels: ["💧 Humidity", "☁️ Clouds", "☀️ UV Index", "💨 Wind"],
+        labels: ["💧 Humedad", "☁️ Nubosidad", "☀️ Índice UV", "💨 Viento"], // Español
         datasets: [
           {
-            label: "Conditions",
+            label: "Condiciones", // Español
             data: [
               data.humedad_relativa_media,
               data.cobertura_nubosa,
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
         plugins: {
           title: {
             display: true,
-            text: "🌍 Atmospheric Profile",
+            text: "🌍 Perfil Atmosférico", // Español
             font: { size: 16, weight: "bold" },
             color: "#212930",
             padding: { bottom: 20 },
@@ -379,12 +379,13 @@ document.addEventListener("DOMContentLoaded", () => {
               label: (context) => {
                 const label = context.label || "";
                 let realValue = "";
-                if (label.includes("Humidity"))
+                if (label.includes("Humedad")) // Comprobación en español
                   realValue = `${data.humedad_relativa_media}%`;
-                else if (label.includes("Clouds"))
+                else if (label.includes("Nubosidad")) // Comprobación en español
                   realValue = `${data.cobertura_nubosa}%`;
-                else if (label.includes("UV")) realValue = `${data.indice_uv}`;
-                else if (label.includes("Wind"))
+                else if (label.includes("Índice UV")) // Comprobación en español
+                  realValue = `${data.indice_uv}`;
+                else if (label.includes("Viento")) // Comprobación en español
                   realValue = `${data.viento_velocidad_media} m/s`;
                 return ` ${label}: ${realValue}`;
               },
@@ -395,12 +396,13 @@ document.addEventListener("DOMContentLoaded", () => {
             font: { weight: "bold", size: 13 },
             formatter: (value, context) => {
               const label = context.chart.data.labels[context.dataIndex];
-              if (label.includes("Humidity"))
+              if (label.includes("Humedad")) // Comprobación en español
                 return data.humedad_relativa_media + "%";
-              else if (label.includes("Clouds"))
+              else if (label.includes("Nubosidad")) // Comprobación en español
                 return data.cobertura_nubosa + "%";
-              else if (label.includes("UV")) return data.indice_uv;
-              else if (label.includes("Wind"))
+              else if (label.includes("Índice UV")) // Comprobación en español
+                return data.indice_uv;
+              else if (label.includes("Viento")) // Comprobación en español
                 return data.viento_velocidad_media + " m/s";
             },
           },
@@ -410,30 +412,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // --- SECCIÓN DE DESCARGA (MODIFICADA PARA INGLÉS) ---
+  // --- SECCIÓN DE DESCARGA (EN ESPAÑOL) ---
   // =========================================================================
 
-  // Mapa para traducir claves de la API de español a inglés.
-  const SPANISH_TO_ENGLISH_KEYS = {
-    temperatura_media: "average_temperature",
-    prob_lluvia: "rain_probability",
-    indice_uv: "uv_index",
-    viento_velocidad_media: "average_wind_speed",
-    humedad_relativa_media: "average_relative_humidity",
-    cobertura_nubosa: "cloud_coverage",
-    calidad_aire: "air_quality",
-    concentracion_polvo: "dust_concentration",
-    prob_calor_extremo: "extreme_heat_probability",
-    prob_frio_extremo: "extreme_cold_probability",
-    prob_nieve: "snow_probability",
-    temperatura_minima: "minimum_temperature",
-    temperatura_maxima: "maximum_temperature",
-    precipitacion_media: "average_precipitation",
-    prob_vientos_fuertes: "strong_wind_probability",
-    sensacion_climatica: "weather_feel",
-    datos_nasa: "nasa_data",
-    recomendaciones_ai: "ai_recommendation",
-  };
+  // Helper para obtener la etiqueta en español de una métrica
+  const allMetricsMap = [...ALL_METRICS.main, ...ALL_METRICS.other].reduce(
+    (map, metric) => {
+      map[metric.key] = metric.label;
+      return map;
+    },
+    {}
+  );
+  
+  function getSpanishLabel(key) {
+      if (allMetricsMap[key]) {
+          return allMetricsMap[key];
+      }
+      // Fallback para claves que no están en ALL_METRICS (ej. temperatura_minima)
+      return key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+  }
+
 
   function addDownloadListeners(result) {
     document
@@ -458,52 +456,36 @@ document.addEventListener("DOMContentLoaded", () => {
     URL.revokeObjectURL(a.href);
   }
 
-  // --- Descarga de JSON en inglés ---
+  // --- Descarga de JSON en español ---
   function handleJsonDownload(result) {
-    const englishResult = {
-      locationName: result.locationName,
-      date: result.date,
-      [SPANISH_TO_ENGLISH_KEYS.ai_recommendation]: result.recomendaciones_ai,
-      [SPANISH_TO_ENGLISH_KEYS.datos_nasa]: {},
-    };
-
-    for (const spanishKey in result.datos_nasa) {
-      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
-      englishResult[SPANISH_TO_ENGLISH_KEYS.datos_nasa][englishKey] =
-        result.datos_nasa[spanishKey];
-    }
-
-    const jsonData = JSON.stringify(englishResult, null, 2);
-    triggerDownload(jsonData, "weather_report.json", "application/json");
+    const jsonData = JSON.stringify(result, null, 2);
+    triggerDownload(
+      jsonData,
+      "reporte_climatico.json",
+      "application/json"
+    );
   }
 
-  // --- Descarga de CSV en inglés ---
+  // --- Descarga de CSV en español ---
   function handleCsvDownload(result) {
-    let csvContent = "Metric,Value\n";
+    let csvContent = "Métrica,Valor\n";
     const dataToExport = result.datos_nasa;
 
-    const formatToTitleCase = (key) =>
-      key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-
-    for (const spanishKey in dataToExport) {
-      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
-      const formattedKey = formatToTitleCase(englishKey);
-      csvContent += `"${formattedKey}","${dataToExport[spanishKey]}"\n`;
+    for (const key in dataToExport) {
+      const label = getSpanishLabel(key);
+      csvContent += `"${label}","${dataToExport[key]}"\n`;
     }
 
-    const recommendationKey = formatToTitleCase(
-      SPANISH_TO_ENGLISH_KEYS["recomendaciones_ai"]
-    );
-    csvContent += `"${recommendationKey}","${result.recomendaciones_ai}"\n`;
+    csvContent += `"Recomendación de IA","${result.recomendaciones_ai}"\n`;
 
     triggerDownload(
       csvContent,
-      "weather_report.csv",
+      "reporte_climatico.csv",
       "text/csv;charset=utf-8;"
     );
   }
 
-  // --- Descarga de PDF en inglés ---
+  // --- Descarga de PDF en español ---
   function handlePdfDownload(result) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -511,7 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const locationName = result.locationName;
     const selectedDate = new Date(
       result.date + "T12:00:00Z"
-    ).toLocaleDateString("en-US", {
+    ).toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -519,14 +501,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.text("Climate Analysis Report", 105, 20, { align: "center" });
+    doc.text("Reporte de Análisis Climático", 105, 20, { align: "center" });
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    const locationString = `Location: ${locationName}`;
+    const locationString = `Ubicación: ${locationName}`;
     const locationLines = doc.splitTextToSize(locationString, 170);
     doc.text(locationLines, 105, 30, { align: "center" });
     const dateY = 30 + locationLines.length * 5;
-    doc.text(`Analysis Date: ${selectedDate}`, 105, dateY, { align: "center" });
+    doc.text(`Fecha de Análisis: ${selectedDate}`, 105, dateY, {
+      align: "center",
+    });
     const lineY = dateY + 8;
     doc.setLineWidth(0.5);
     doc.line(20, lineY, 190, lineY);
@@ -534,7 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const recommendationY = lineY + 13;
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("AI Recommendation", 20, recommendationY);
+    doc.text("Recomendación de IA", 20, recommendationY);
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
     const recommendationLines = doc.splitTextToSize(
@@ -544,25 +528,21 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.text(recommendationLines, 20, recommendationY + 7);
 
     const tableBody = [];
-    const formatToTitleCase = (key) =>
-      key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-
-    for (const spanishKey in data) {
-      const englishKey = SPANISH_TO_ENGLISH_KEYS[spanishKey] || spanishKey;
-      const formattedKey = formatToTitleCase(englishKey);
-      tableBody.push([formattedKey, data[spanishKey]]);
+    for (const key in data) {
+      const label = getSpanishLabel(key);
+      tableBody.push([label, data[key]]);
     }
 
     const tableStartY =
       recommendationY + 7 + recommendationLines.length * 5 + 5;
     doc.autoTable({
       startY: tableStartY,
-      head: [["NASA POWER Metric", "Recorded Value"]],
+      head: [["Métrica de NASA POWER", "Valor Registrado"]],
       body: tableBody,
       theme: "striped",
       headStyles: { fillColor: [67, 105, 215] },
     });
 
-    doc.save("weather_report.pdf");
+    doc.save("reporte_climatico.pdf");
   }
 });
