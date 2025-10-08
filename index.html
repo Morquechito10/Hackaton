@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NASA WIROP Dashboard</title>
+  <title>Panel NASA WIROP</title>
 
     <link
       rel="stylesheet"
@@ -39,44 +39,44 @@
 
         <main>
           <div class="card">
-            <h2>Select a Location and Date</h2>
+            <h2>Selecciona una ubicación y fecha</h2>
 
             <form id="location-form">
-              <label for="location-search">Search for a location:</label>
+              <label for="location-search">Buscar una ubicación:</label>
               <div class="search-container">
                 <div class="input-location-wrapper">
                   <button
                     type="button"
                     id="current-location-button"
-                    title="Use my location"
-                    aria-label="Use my location"
+                    title="Usar mi ubicación"
+                    aria-label="Usar mi ubicación"
                   >
                     <i class="fa-solid fa-location-dot"></i>
                   </button>
                   <input
                     type="text"
                     id="location-search"
-                    placeholder="E.g.: Times Square, New York"
+                    placeholder="Ejemplo: Times Square, Nueva York"
                   />
                 </div>
-                <button type="submit" id="search-button">Search</button>
+                <button type="submit" id="search-button">Buscar</button>
               </div>
             </form>
 
             <hr class="divider" />
 
             <div id="analysis-form">
-              <label for="location-display">Selected Location:</label>
+              <label for="location-display">Ubicación seleccionada:</label>
               <input
                 type="text"
                 id="location-display"
-                placeholder="Click on the map or search for a place..."
+                placeholder="Haz clic en el mapa o busca un lugar..."
                 disabled
               />
 
               <div class="coords-container">
                 <div>
-                  <label for="latitude">Latitude:</label>
+                  <label for="latitude">Latitud:</label>
                   <input
                     type="number"
                     id="latitude"
@@ -85,7 +85,7 @@
                   />
                 </div>
                 <div>
-                  <label for="longitude">Longitude:</label>
+                  <label for="longitude">Longitud:</label>
                   <input
                     type="number"
                     id="longitude"
@@ -95,15 +95,15 @@
                 </div>
               </div>
 
-              <label for="date">Select a date:</label>
+              <label for="date">Selecciona una fecha:</label>
               <input type="date" id="date" required />
 
-              <button type="button" id="analyze-button">Analyze Weather</button>
+              <button type="button" id="analyze-button">Analizar clima</button>
             </div>
           </div>
 
           <div id="results-container" class="card hidden">
-            <h2>Analysis Results</h2>
+            <h2>Resultados del análisis</h2>
             <div id="results-content"></div>
           </div>
         </main>
@@ -118,7 +118,7 @@
 
     <div id="loading-overlay">
       <div class="spinner"></div>
-      <p>Analyzing with NASA data...</p>
+  <p>Analizando con datos de la NASA...</p>
     </div>
   </body>
 </html>

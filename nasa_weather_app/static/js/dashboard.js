@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
             map.setView([lat, lon], 13);
           },
           (error) => {
-            alert("Could not get your location.");
+            alert("No se pudo obtener tu ubicación.");
           }
         );
       } else {
-        alert("Geolocation is not supported by your browser.");
+  alert("La geolocalización no es compatible con tu navegador.");
       }
     });
   }
@@ -66,8 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
   standardLayer.addTo(map);
   // Control de capas
   const baseMaps = {
-    "Standard": standardLayer,
-    "Satellite": satelliteLayer
+  "Estándar": standardLayer,
+  "Satélite": satelliteLayer
   };
   L.control.layers(baseMaps).addTo(map);
 
@@ -93,10 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         map.setView([bestResult.lat, bestResult.lon], 13);
       } else {
-        throw new Error("No results found.");
+  throw new Error("No se encontraron resultados.");
       }
     } catch (error) {
-      alert(error.message);
+  alert(error.message);
     }
   });
 
@@ -114,9 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
         );
         const data = await response.json();
-        locationDisplayInput.value = data.display_name || "Unknown location";
+  locationDisplayInput.value = data.display_name || "Ubicación desconocida";
       } catch (e) {
-        locationDisplayInput.value = "Unknown location";
+  locationDisplayInput.value = "Ubicación desconocida";
       }
     } else {
       locationDisplayInput.value = displayName;
@@ -132,14 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- INICIO DE LA NUEVA VALIDACIÓN ---
     // 1. Validar que los campos no estén vacíos
     if (!lat || !lon || !date) {
-      alert("Please select a location and a date.");
+  alert("Por favor selecciona una ubicación y una fecha.");
       return; // Detiene la ejecución si falta algo
     }
 
     // 2. Doble verificación de la fecha para TODOS los dispositivos
     const minDate = dateInput.min; // Obtiene la fecha mínima permitida (mañana)
     if (date < minDate) {
-      alert(`Invalid date. Please select a date on or after ${minDate}.`);
+  alert(`Fecha inválida. Por favor selecciona una fecha igual o posterior a ${minDate}.`);
       return; // Detiene la ejecución si la fecha es pasada
     }
     // --- FIN DE LA NUEVA VALIDACIÓN ---
@@ -164,20 +164,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          errorData.detail || "An error occurred while querying the API."
+          errorData.detail || "Ocurrió un error al consultar la API."
         );
       }
 
       const result = await response.json();
 
-      result.locationName = locationDisplayInput.value || "selected location";
+  result.locationName = locationDisplayInput.value || "ubicación seleccionada";
       result.date = date;
 
       sessionStorage.setItem("weatherData", JSON.stringify(result));
 
       window.location.href = "nasa_weather_app/templates/results.html";
     } catch (error) {
-      alert(`Error: ${error.message}`);
+  alert(`Error: ${error.message}`);
       loadingOverlay.style.display = "none";
     } finally {
       analyzeButton.disabled = false;
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
         map.setView([lat, lon], 13);
       },
       (error) => {
-        console.warn("Could not get location:", error.message);
+  console.warn("No se pudo obtener la ubicación:", error.message);
       }
     );
   }

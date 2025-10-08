@@ -10,20 +10,20 @@ document.addEventListener("DOMContentLoaded", () => {
     main: [
       {
         key: "temperatura_media",
-        label: "Temperature",
+  label: "Temperatura",
         icon: "🌡️",
         theme: "card-temp",
       },
       {
         key: "prob_lluvia",
-        label: "Rain Probability",
+  label: "Probabilidad de lluvia",
         icon: "💧",
         theme: "card-rain",
       },
-      { key: "indice_uv", label: "UV Index", icon: "☀️", theme: "card-uv" },
+  { key: "indice_uv", label: "Índice UV", icon: "☀️", theme: "card-uv" },
       {
         key: "viento_velocidad_media",
-        label: "Wind",
+  label: "Viento",
         icon: "💨",
         theme: "card-wind",
       },
@@ -31,48 +31,48 @@ document.addEventListener("DOMContentLoaded", () => {
     other: [
       {
         key: "humedad_relativa_media",
-        label: "Humidity",
+  label: "Humedad",
         icon: "💧",
         theme: "card-humidity",
       },
       {
         key: "cobertura_nubosa",
-        label: "Clouds",
+  label: "Nubosidad",
         icon: "☁️",
         theme: "card-clouds",
       },
       {
         key: "calidad_aire",
-        label: "Air Quality",
+  label: "Calidad del aire",
         icon: "🍃",
         theme: "card-air",
       },
       {
         key: "concentracion_polvo",
-        label: "Dust",
+  label: "Polvo",
         icon: "🏜️",
         theme: "card-dust",
       },
       {
         key: "prob_calor_extremo",
-        label: "Extreme Heat",
+  label: "Calor extremo",
         icon: "🔥",
         theme: "card-heat",
       },
       {
         key: "prob_frio_extremo",
-        label: "Extreme Cold",
+  label: "Frío extremo",
         icon: "🥶",
         theme: "card-cold",
       },
-      { key: "prob_nieve", label: "Snow", icon: "❄️", theme: "card-snow" },
+  { key: "prob_nieve", label: "Nieve", icon: "❄️", theme: "card-snow" },
     ],
   };
 
   // --- Lógica Principal ---
   const resultsDataString = sessionStorage.getItem("weatherData");
   if (!resultsDataString) {
-    resultsContent.innerHTML = `<p style="color: red;">No data found to display. Please <a href="/">go back</a> and run a new analysis.</p>`;
+  resultsContent.innerHTML = `<p style="color: red;">No se encontraron datos para mostrar. Por favor <a href="/">regresa</a> y realiza un nuevo análisis.</p>`;
     return;
   }
   const result = JSON.parse(resultsDataString);
@@ -85,12 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return "../static/images/agradable.png";
     }
     const imageMap = {
-      "very hot": "../static/images/caluroso.jpg",
-      "very uncomfortable": "../static/images/incomodo.png",
-      "very cold": "../static/images/frio.png",
-      "very humid": "../static/images/humedo.png",
-      windy: "../static/images/ventoso.jpg",
-      pleasant: "../static/images/agradable.png",
+  "muy caluroso": "../static/images/caluroso.jpg",
+  "muy incómodo": "../static/images/incomodo.png",
+  "muy frío": "../static/images/frio.png",
+  "muy húmedo": "../static/images/humedo.png",
+  "ventoso": "../static/images/ventoso.jpg",
+  "agradable": "../static/images/agradable.png",
     };
     const normalizedFeeling = weatherFeeling.toLowerCase();
     return imageMap[normalizedFeeling] || "../static/images/agradable.png";
@@ -139,11 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const value = data[metric.key];
     let details = "";
     if (metric.key === "temperatura_media")
-      details = `<small>Min: ${data.temperatura_minima}°C / Max: ${data.temperatura_maxima}°C</small>`;
+  details = `<small>Mín: ${data.temperatura_minima}°C / Máx: ${data.temperatura_maxima}°C</small>`;
     if (metric.key === "prob_lluvia")
-      details = `<small>Precipitation: ${data.precipitacion_media} mm</small>`;
+  details = `<small>Precipitación: ${data.precipitacion_media} mm</small>`;
     if (metric.key === "viento_velocidad_media")
-      details = `<small>Strong Wind Prob.: ${data.prob_vientos_fuertes}%</small>`;
+  details = `<small>Prob. de vientos fuertes: ${data.prob_vientos_fuertes}%</small>`;
 
     return `
             <div class="metric-card ${metric.theme}">
@@ -195,29 +195,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p class="summary-location">${locationName}</p>
                     <p class="summary-date">${formattedDate}</p>
                     <p class="summary-temp">${data.temperatura_media}°C</p>
-                    <p class="summary-feel">Feeling: <strong>${data.sensacion_climatica}</strong></p>
+                    <p class="summary-feel">Sensación: <strong>${data.sensacion_climatica}</strong></p>
                 </div>
                 <img src="${weatherImagePath}" alt="Weather Illustration" class="summary-illustration-img">
             </div>
             <hr class="divider">
             <div class="settings-container">
-                <h4>Key Metrics</h4>
-                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Customize Metrics</button>
+                <h4>Métricas principales</h4>
+                <button id="open-settings-btn" class="settings-button"><i class="fa-solid fa-gear"></i> Personalizar métricas</button>
             </div>
             <div class="results-grid" id="main-metrics-grid"></div>
             <hr class="divider">
-            <h4>Other Metrics</h4>
+            <h4>Otras métricas</h4>
             <div class="results-grid" id="other-metrics-grid"></div>
             <hr class="divider">
-            <h4>AI Recommendation 💡</h4>
+            <h4>Recomendación de IA 💡</h4>
             <p class="recommendation">${recommendation}</p>
         `;
 
     renderMetricCards(data);
 
-    chartsSection.innerHTML = `<hr class="divider"><h4>Graphical Visualization</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
+  chartsSection.innerHTML = `<hr class="divider"><h4>Visualización gráfica</h4><div class="charts-container"><div class="chart-wrapper"><canvas id="temperatureChart"></canvas></div><div class="chart-wrapper"><canvas id="conditionsChart"></canvas></div></div>`;
 
-    actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analyze Another Location</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
+  actionsSection.innerHTML = `<hr class="divider"><div class="action-buttons-container"><a href="/" class="back-button">Analizar otra ubicación</a><div class="download-buttons"><button id="download-pdf" class="download-button"><i class="fa-solid fa-file-pdf"></i> PDF</button><button id="download-csv" class="download-button"><i class="fa-solid fa-file-csv"></i> CSV</button><button id="download-json" class="download-button"><i class="fa-solid fa-file-code"></i> JSON</button></div></div>`;
 
     createCharts(data);
     addDownloadListeners(result);
@@ -242,13 +242,13 @@ document.addEventListener("DOMContentLoaded", () => {
     modalContainer.innerHTML = `
             <div class="modal-overlay" id="settings-modal">
                 <div class="modal-content">
-                    <div class="modal-header"><h3>Customize Metrics</h3></div>
+                    <div class="modal-header"><h3>Personalizar métricas</h3></div>
                     <div class="modal-body">
                         <ul class="metric-toggle-list">${checkboxesHTML}</ul>
                     </div>
                     <div class="modal-footer">
-                        <button id="modal-close" class="download-button modal-button">Cancel</button>
-                        <button id="modal-save" class="download-button modal-button">Save</button>
+                        <button id="modal-close" class="download-button modal-button">Cancelar</button>
+                        <button id="modal-save" class="download-button modal-button">Guardar</button>
                     </div>
                 </div>
             </div>
