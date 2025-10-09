@@ -191,16 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 }
 
-// Y luego modifica tu función displayResults para ser asíncrona:
-async function displayResults(result) {
-  try {
-    await loadMarkedLibrary();
-  } catch (error) {
-    console.warn('Could not load Marked.js, using basic formatter', error);
-  }
 
   // --- Lógica de Visualización Principal ---
-  function displayResults(result) {
+  async function displayResults(result) {
     const data = result.datos_nasa;
     const recommendation = result.recomendaciones_ai;
     const locationName = result.locationName;
@@ -210,9 +203,12 @@ async function displayResults(result) {
     const formattedDate = displayDate.toLocaleString("es-ES", dateOptions); // Cambiado a español
     const mainWeatherIcon = getWeatherIcon(data);
     const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
-    const formattedRecommendation = window.marked 
-    ? window.marked.parse(recommendation) 
-    : formatBasicMarkdown(recommendation);
+    try {
+    await loadMarkedLibrary();
+  } catch (error) {
+    console.warn('Could not load Marked.js, using basic formatter', error);
+  }
+    const formattedRecommendation = window.marked ? window.marked.parse(recommendation) : formatBasicMarkdown(recommendation);
   
  
   
