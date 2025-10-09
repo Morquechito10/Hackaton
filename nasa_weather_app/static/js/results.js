@@ -176,6 +176,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function formatBasicMarkdown(text) {
+  if (!text) return '';
+  
+  // Convertir saltos de línea dobles en párrafos
+  let formatted = text.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  
+  // Formatear negritas **texto**
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Formatear cursivas *texto*
+  formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  // Formatear listas con guiones
+  formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
+  formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+  
+  // Formatear listas numeradas
+  formatted = formatted.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  
+  // Formatear títulos
+  formatted = formatted.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+  formatted = formatted.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+  formatted = formatted.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+  
+  // Formatear código inline `código`
+  formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+  
+  // Convertir saltos de línea simples en <br>
+  formatted = formatted.replace(/\n/g, '<br>');
+  
+  return formatted;
+}
+
   // --- Lógica de Visualización Principal ---
   function displayResults(result) {
     const data = result.datos_nasa;
@@ -210,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="results-grid" id="other-metrics-grid"></div>
                 <hr class="divider">
                 <h4>Recomendación de IA 💡</h4>
-                <div class="recommendation">${window.marked ? window.marked(recommendation) : recommendation}</div>
+                <div class="recommendation">${formatBasicMarkdown(recommendation)}</div>
             `;
 
     renderMetricCards(data);
