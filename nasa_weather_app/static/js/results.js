@@ -176,38 +176,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function formatBasicMarkdown(text) {
-  if (!text) return '';
-  
-  // Convertir saltos de línea dobles en párrafos
-  let formatted = text.split('\n\n').map(p => `<p>${p}</p>`).join('');
-  
-  // Formatear negritas **texto**
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  // Formatear cursivas *texto*
-  formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Formatear listas con guiones
-  formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
-  formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-  
-  // Formatear listas numeradas
-  formatted = formatted.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-  
-  // Formatear títulos
-  formatted = formatted.replace(/^### (.+)$/gm, '<h4>$1</h4>');
-  formatted = formatted.replace(/^## (.+)$/gm, '<h3>$1</h3>');
-  formatted = formatted.replace(/^# (.+)$/gm, '<h2>$1</h2>');
-  
-  // Formatear código inline `código`
-  formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
-  
-  // Convertir saltos de línea simples en <br>
-  formatted = formatted.replace(/\n/g, '<br>');
-  
-  return formatted;
+  function loadMarkedLibrary() {
+  return new Promise((resolve, reject) => {
+    if (window.marked) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Marked.js'));
+    document.head.appendChild(script);
+  });
 }
+
+// Y luego modifica tu función displayResults para ser asíncrona:
+async function displayResults(result) {
+  try {
+    await loadMarkedLibrary();
+  } catch (error) {
+    console.warn('Could not load Marked.js, using basic formatter', error);
+  }
 
   // --- Lógica de Visualización Principal ---
   function displayResults(result) {
@@ -220,6 +210,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedDate = displayDate.toLocaleString("es-ES", dateOptions); // Cambiado a español
     const mainWeatherIcon = getWeatherIcon(data);
     const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
+    const formattedRecommendation = window.marked 
+    ? window.marked.parse(recommendation) 
+    : formatBasicMarkdown(recommendation);
+  
+ 
+  
 
     resultsContent.innerHTML = `
                 <div class="summary-card">
@@ -243,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="results-grid" id="other-metrics-grid"></div>
                 <hr class="divider">
                 <h4>Recomendación de IA 💡</h4>
-                <div class="recommendation">${formatBasicMarkdown(recommendation)}</div>
+                <div class="recommendation">${formattedRecommendation}</div>
             `;
 
     renderMetricCards(data);
