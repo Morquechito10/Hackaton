@@ -176,8 +176,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function loadMarkedLibrary() {
+  return new Promise((resolve, reject) => {
+    if (window.marked) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Marked.js'));
+    document.head.appendChild(script);
+  });
+}
+
+
   // --- Lógica de Visualización Principal ---
-  function displayResults(result) {
+  async function displayResults(result) {
     const data = result.datos_nasa;
     const recommendation = result.recomendaciones_ai;
     const locationName = result.locationName;
@@ -187,6 +203,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedDate = displayDate.toLocaleString("es-ES", dateOptions); // Cambiado a español
     const mainWeatherIcon = getWeatherIcon(data);
     const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
+    try {
+    await loadMarkedLibrary();
+  } catch (error) {
+    console.warn('Could not load Marked.js, using basic formatter', error);
+  }
+    const formattedRecommendation = window.marked ? window.marked.parse(recommendation) : formatBasicMarkdown(recommendation);
+  
+ 
+  
 
     resultsContent.innerHTML = `
                 <div class="summary-card">
@@ -210,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="results-grid" id="other-metrics-grid"></div>
                 <hr class="divider">
                 <h4>Recomendación de IA 💡</h4>
-                <p class="recommendation">${recommendation}</p>
+                <div class="recommendation">${formattedRecommendation}</div>
             `;
 
     renderMetricCards(data);
