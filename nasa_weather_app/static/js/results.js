@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="results-grid" id="other-metrics-grid"></div>
                 <hr class="divider">
                 <h4>Recomendación de IA 💡</h4>
-                <div class="recommendation">${window.marked(recommendation)}</div>
+                <div class="recommendation">${window.marked ? window.marked(recommendation) : recommendation}</div>
             `;
 
     renderMetricCards(data);
