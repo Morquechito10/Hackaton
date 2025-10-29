@@ -177,20 +177,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadMarkedLibrary() {
-  return new Promise((resolve, reject) => {
-    if (window.marked) {
-      resolve();
-      return;
-    }
-    
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load Marked.js'));
-    document.head.appendChild(script);
-  });
-}
+    return new Promise((resolve, reject) => {
+      if (window.marked) {
+        resolve();
+        return;
+      }
 
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Failed to load Marked.js"));
+      document.head.appendChild(script);
+    });
+  }
+  function formatBasicMarkdown(text) {
+    // Una función de respaldo simple si Marked.js falla
+    // Reemplaza saltos de línea por <br> y **negrita** por <strong>
+    if (typeof text !== "string") return "";
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>");
+  }
 
   // --- Lógica de Visualización Principal ---
   async function displayResults(result) {
@@ -204,14 +211,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainWeatherIcon = getWeatherIcon(data);
     const weatherImagePath = getWeatherImagePath(data.sensacion_climatica);
     try {
-    await loadMarkedLibrary();
-  } catch (error) {
-    console.warn('Could not load Marked.js, using basic formatter', error);
-  }
-    const formattedRecommendation = window.marked ? window.marked.parse(recommendation) : formatBasicMarkdown(recommendation);
-  
- 
-  
+      await loadMarkedLibrary();
+    } catch (error) {
+      console.warn("Could not load Marked.js, using basic formatter", error);
+    }
+    const formattedRecommendation = window.marked
+      ? window.marked.parse(recommendation)
+      : formatBasicMarkdown(recommendation);
 
     resultsContent.innerHTML = `
                 <div class="summary-card">
@@ -404,13 +410,17 @@ document.addEventListener("DOMContentLoaded", () => {
               label: (context) => {
                 const label = context.label || "";
                 let realValue = "";
-                if (label.includes("Humedad")) // Comprobación en español
+                if (label.includes("Humedad"))
+                  // Comprobación en español
                   realValue = `${data.humedad_relativa_media}%`;
-                else if (label.includes("Nubosidad")) // Comprobación en español
+                else if (label.includes("Nubosidad"))
+                  // Comprobación en español
                   realValue = `${data.cobertura_nubosa}%`;
-                else if (label.includes("Índice UV")) // Comprobación en español
+                else if (label.includes("Índice UV"))
+                  // Comprobación en español
                   realValue = `${data.indice_uv}`;
-                else if (label.includes("Viento")) // Comprobación en español
+                else if (label.includes("Viento"))
+                  // Comprobación en español
                   realValue = `${data.viento_velocidad_media} m/s`;
                 return ` ${label}: ${realValue}`;
               },
@@ -421,13 +431,17 @@ document.addEventListener("DOMContentLoaded", () => {
             font: { weight: "bold", size: 13 },
             formatter: (value, context) => {
               const label = context.chart.data.labels[context.dataIndex];
-              if (label.includes("Humedad")) // Comprobación en español
+              if (label.includes("Humedad"))
+                // Comprobación en español
                 return data.humedad_relativa_media + "%";
-              else if (label.includes("Nubosidad")) // Comprobación en español
+              else if (label.includes("Nubosidad"))
+                // Comprobación en español
                 return data.cobertura_nubosa + "%";
-              else if (label.includes("Índice UV")) // Comprobación en español
+              else if (label.includes("Índice UV"))
+                // Comprobación en español
                 return data.indice_uv;
-              else if (label.includes("Viento")) // Comprobación en español
+              else if (label.includes("Viento"))
+                // Comprobación en español
                 return data.viento_velocidad_media + " m/s";
             },
           },
@@ -448,15 +462,14 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {}
   );
-  
-  function getSpanishLabel(key) {
-      if (allMetricsMap[key]) {
-          return allMetricsMap[key];
-      }
-      // Fallback para claves que no están en ALL_METRICS (ej. temperatura_minima)
-      return key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-  }
 
+  function getSpanishLabel(key) {
+    if (allMetricsMap[key]) {
+      return allMetricsMap[key];
+    }
+    // Fallback para claves que no están en ALL_METRICS (ej. temperatura_minima)
+    return key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  }
 
   function addDownloadListeners(result) {
     document
@@ -484,11 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Descarga de JSON en español ---
   function handleJsonDownload(result) {
     const jsonData = JSON.stringify(result, null, 2);
-    triggerDownload(
-      jsonData,
-      "reporte_climatico.json",
-      "application/json"
-    );
+    triggerDownload(jsonData, "reporte_climatico.json", "application/json");
   }
 
   // --- Descarga de CSV en español ---
