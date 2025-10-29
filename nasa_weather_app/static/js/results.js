@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       {
         key: "prob_frio_extremo",
-        label: "Frío extremo",
+        label: "Frio extremo",
         icon: "🥶",
         theme: "card-cold",
       },
@@ -94,9 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const imageMap = {
       "muy caluroso": "../static/images/caluroso.jpg",
-      "muy incómodo": "../static/images/incomodo.png",
-      "muy frío": "../static/images/frio.png",
-      "muy húmedo": "../static/images/humedo.png",
+      "muy incomodo": "../static/images/incomodo.png",
+      "muy frio": "../static/images/frio.png",
+      "muy humedo": "../static/images/humedo.png",
       ventoso: "../static/images/ventoso.jpg",
       agradable: "../static/images/agradable.png",
     };
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 else if (label.includes("Nubosidad"))
                   // Comprobación en español
                   realValue = `${data.cobertura_nubosa}%`;
-                else if (label.includes("Índice UV"))
+                else if (label.includes("Indice UV"))
                   // Comprobación en español
                   realValue = `${data.indice_uv}`;
                 else if (label.includes("Viento"))
@@ -447,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
               else if (label.includes("Nubosidad"))
                 // Comprobación en español
                 return data.cobertura_nubosa + "%";
-              else if (label.includes("Índice UV"))
+              else if (label.includes("Indice UV"))
                 // Comprobación en español
                 return data.indice_uv;
               else if (label.includes("Viento"))
@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Descarga de CSV en español ---
   function handleCsvDownload(result) {
-    let csvContent = "Métrica,Valor\n";
+    let csvContent = "Metrica,Valor\n";
     const dataToExport = result.datos_nasa;
 
     for (const key in dataToExport) {
