@@ -556,13 +556,30 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.text("Recomendación de IA", 20, recommendationY);
+
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
+
+    // --- INICIO DE LA CORRECCIÓN ---
+    // Regex para eliminar la mayoría de emojis y caracteres gráficos
+    const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g;
+    
+    // Regex para eliminar caracteres de Markdown como ##, **, _, etc.
+    const markdownRegex = /([*_#`~]{1,3})/g;
+    
+    // 1. Limpia el texto de emojis y markdown
+    const cleanRecommendation = result.recomendaciones_ai
+                                    .replace(emojiRegex, '')    // Elimina emojis
+                                    .replace(markdownRegex, '') // Elimina ##, **, etc.
+                                    .replace(/  +/g, ' ');     // Limpia espacios dobles que queden
+
+    // 2. Usa el texto limpio para el PDF
     const recommendationLines = doc.splitTextToSize(
-      result.recomendaciones_ai,
+      cleanRecommendation, // Usamos la variable limpia
       170
     );
     doc.text(recommendationLines, 20, recommendationY + 7);
+    // --- FIN DE LA CORRECCIÓN ---
 
     const tableBody = [];
     for (const key in data) {
