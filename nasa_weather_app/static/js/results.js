@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
       { key: "prob_nieve", label: "Nieve", icon: "❄️", theme: "card-snow" },
     ],
   };
+    // Helper para obtener la etiqueta en español de una métrica
+  const allMetricsMap = [...ALL_METRICS.main, ...ALL_METRICS.other].reduce(
+    (map, metric) => {
+      map[metric.key] = metric.label;
+      return map;
+    },
+    {}
+  );
 
   // --- Lógica Principal ---
   const resultsDataString = sessionStorage.getItem("weatherData");
@@ -289,10 +297,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document
       .getElementById("open-settings-btn")
       .addEventListener("click", () => modal.classList.add("visible"));
-    document
-      .getElementById("modal-close")
+    // Busca "modal-close" DENTRO del elemento "modal" que ya encontraste
+    modal.querySelector("#modal-close")
       .addEventListener("click", () => modal.classList.remove("visible"));
-    document.getElementById("modal-save").addEventListener("click", () => {
+
+    // Haz lo mismo para "modal-save"
+    modal.querySelector("#modal-save").addEventListener("click", () => {
       const newPrefs = {};
       document
         .querySelectorAll(".metric-toggle-item input")
@@ -454,14 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- SECCIÓN DE DESCARGA (EN ESPAÑOL) ---
   // =========================================================================
 
-  // Helper para obtener la etiqueta en español de una métrica
-  const allMetricsMap = [...ALL_METRICS.main, ...ALL_METRICS.other].reduce(
-    (map, metric) => {
-      map[metric.key] = metric.label;
-      return map;
-    },
-    {}
-  );
+
 
   function getSpanishLabel(key) {
     if (allMetricsMap[key]) {
