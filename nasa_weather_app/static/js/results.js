@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const script = document.createElement("script");
-      script.src = "https://web-production-50376.up.railway.app";
+      script.src = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
       script.onload = () => resolve();
       script.onerror = () => reject(new Error("Failed to load Marked.js"));
       document.head.appendChild(script);
