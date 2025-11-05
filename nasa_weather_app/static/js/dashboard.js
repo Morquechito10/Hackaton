@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     analyzeButton.disabled = true;
 
     try {
-      const apiUrl = "https://web-production-50376.up.railway.app";
+      const apiUrl = "https://web-production-50376.up.railway.app/clima";
       const requestData = {
         latitud: parseFloat(lat),
         longitud: parseFloat(lon),
